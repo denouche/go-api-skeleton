@@ -41,11 +41,13 @@ func NewRouter(config *Config) *gin.Engine {
 	public := router.Group("/")
 	public.Handle(http.MethodGet, "/_health", hc.GetHealth)
 
+	// start: user routes
 	public.Handle(http.MethodGet, "/users", hc.GetAllUsers)
 	public.Handle(http.MethodPost, "/users", hc.CreateUser)
 	public.Handle(http.MethodGet, "/users/:id", hc.GetUser)
 	public.Handle(http.MethodPut, "/users/:id", hc.UpdateUser)
 	public.Handle(http.MethodDelete, "/users/:id", hc.DeleteUser)
+	// end: user routes
 
 	return router
 }
