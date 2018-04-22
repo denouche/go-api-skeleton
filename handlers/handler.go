@@ -32,7 +32,7 @@ func NewRouter(config *Config) *gin.Engine {
 
 	hc := &handlersContext{}
 	if config.Mock {
-		hc.db = dao.NewDatabaseMock()
+		hc.db = dao.NewDatabaseFake()
 	} else {
 		hc.db = dao.NewDatabasePostgreSQL(config.DBConnectionURI)
 	}
@@ -40,8 +40,12 @@ func NewRouter(config *Config) *gin.Engine {
 
 	public := router.Group("/")
 	public.Handle(http.MethodGet, "/_health", hc.GetHealth)
+
 	public.Handle(http.MethodGet, "/users", hc.GetAllUsers)
 	public.Handle(http.MethodPost, "/users", hc.CreateUser)
+	public.Handle(http.MethodGet, "/users/:id", hc.GetUser)
+	public.Handle(http.MethodPut, "/users/:id", hc.UpdateUser)
+	public.Handle(http.MethodDelete, "/users/:id", hc.DeleteUser)
 
 	return router
 }

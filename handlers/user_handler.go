@@ -14,6 +14,7 @@ import (
 func (hc *handlersContext) GetAllUsers(c *gin.Context) {
 	users, err := hc.db.GetAllUsers()
 	if err != nil {
+		logrus.WithError(err).Error("error while getting users")
 		utils.JSONErrorWithMessage(c.Writer, model.ErrInternalServer, "Error while getting users")
 		return
 	}
@@ -23,7 +24,7 @@ func (hc *handlersContext) GetAllUsers(c *gin.Context) {
 func (hc *handlersContext) CreateUser(c *gin.Context) {
 	b, err := c.GetRawData()
 	if err != nil {
-		logrus.WithError(err).Error("Error while creating user, read data fail")
+		logrus.WithError(err).Error("error while creating user, read data fail")
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -52,15 +53,167 @@ func (hc *handlersContext) CreateUser(c *gin.Context) {
 			utils.JSONErrorWithMessage(c.Writer, model.ErrAlreadyExists, "User with the given email already exists")
 			return
 		default:
-			logrus.WithError(err).WithField("type", e.Type).Error("CreateUser: Error type not handled")
+			logrus.WithError(err).WithField("type", e.Type).Error("error CreateUser: Error type not handled")
 			utils.JSONError(c.Writer, model.ErrInternalServer)
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("Error while creating user")
+		logrus.WithError(err).Error("error while creating user")
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
 
 	utils.JSON(c.Writer, http.StatusCreated, user)
+}
+
+func (hc *handlersContext) GetUser(c *gin.Context) {
+	userID := c.Param("id")
+
+	err := hc.validator.Var(userID, "uuid4")
+	if err != nil {
+		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
+		return
+	}
+
+	user, err := hc.db.GetUsersByID(userID)
+	if e, ok := err.(*dao.DAOError); ok {
+		switch {
+		case e.Type == dao.ErrTypeNotFound:
+			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "User not found")
+			return
+		default:
+			logrus.WithError(err).WithField("type", e.Type).Error("error GetUser: get user error type not handled")
+			utils.JSONError(c.Writer, model.ErrInternalServer)
+			return
+		}
+	} else if err != nil {
+		logrus.WithError(err).Error("error while get user")
+		utils.JSONError(c.Writer, model.ErrInternalServer)
+		return
+	}
+
+	if user == nil {
+		utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "User not found")
+		return
+	}
+
+	utils.JSON(c.Writer, http.StatusOK, user)
+}
+
+func (hc *handlersContext) DeleteUser(c *gin.Context) {
+	userID := c.Param("id")
+
+	err := hc.validator.Var(userID, "uuid4")
+	if err != nil {
+		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
+		return
+	}
+
+	// check user id given in URL exists
+	_, err = hc.db.GetUsersByID(userID)
+	if e, ok := err.(*dao.DAOError); ok {
+		switch {
+		case e.Type == dao.ErrTypeNotFound:
+			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "User to delete not found")
+			return
+		default:
+			logrus.WithError(err).WithField("type", e.Type).Error("error DeleteUser: get user error type not handled")
+			utils.JSONError(c.Writer, model.ErrInternalServer)
+			return
+		}
+	} else if err != nil {
+		logrus.WithError(err).Error("error while get user to delete")
+		utils.JSONError(c.Writer, model.ErrInternalServer)
+		return
+	}
+
+	err = hc.db.DeleteUser(userID)
+	if e, ok := err.(*dao.DAOError); ok {
+		switch {
+		case e.Type == dao.ErrTypeNotFound:
+			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "User to delete not found")
+			return
+		default:
+			logrus.WithError(err).WithField("type", e.Type).Error("error DeleteUser: Error type not handled")
+			utils.JSONError(c.Writer, model.ErrInternalServer)
+			return
+		}
+	} else if err != nil {
+		logrus.WithError(err).Error("error while deleting user")
+		utils.JSONError(c.Writer, model.ErrInternalServer)
+		return
+	}
+
+	utils.JSON(c.Writer, http.StatusNoContent, nil)
+}
+
+func (hc *handlersContext) UpdateUser(c *gin.Context) {
+	userID := c.Param("id")
+
+	err := hc.validator.Var(userID, "uuid4")
+	if err != nil {
+		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
+		return
+	}
+
+	// check user id given in URL exists
+	user, err := hc.db.GetUsersByID(userID)
+	if e, ok := err.(*dao.DAOError); ok {
+		switch {
+		case e.Type == dao.ErrTypeNotFound:
+			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "User to update not found")
+			return
+		default:
+			logrus.WithError(err).WithField("type", e.Type).Error("deleteUser: get user error type not handled")
+			utils.JSONError(c.Writer, model.ErrInternalServer)
+			return
+		}
+	} else if err != nil {
+		logrus.WithError(err).Error("error while get user to update")
+		utils.JSONError(c.Writer, model.ErrInternalServer)
+		return
+	}
+
+	// get body and verify data
+	b, err := c.GetRawData()
+	if err != nil {
+		logrus.WithError(err).Error("error while updating user, read data fail")
+		utils.JSONError(c.Writer, model.ErrInternalServer)
+		return
+	}
+
+	userToUpdate := model.UserEditable{}
+	err = json.Unmarshal(b, &userToUpdate)
+	if err != nil {
+		utils.JSONError(c.Writer, model.ErrBadRequestFormat)
+		return
+	}
+
+	err = hc.validator.Struct(userToUpdate)
+	if err != nil {
+		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
+		return
+	}
+
+	user.UserEditable = userToUpdate
+
+	// make the update
+	err = hc.db.UpdateUser(user)
+	if e, ok := err.(*dao.DAOError); ok {
+		switch {
+		case e.Type == dao.ErrTypeNotFound:
+			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "User to update not found")
+			return
+		default:
+			logrus.WithError(err).WithField("type", e.Type).Error("error UpdateUser: Error type not handled")
+			utils.JSONError(c.Writer, model.ErrInternalServer)
+			return
+		}
+	} else if err != nil {
+		logrus.WithError(err).Error("error while deleting user")
+		utils.JSONError(c.Writer, model.ErrInternalServer)
+		return
+	}
+
+	utils.JSON(c.Writer, http.StatusOK, user)
 }

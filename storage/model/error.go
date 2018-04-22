@@ -13,10 +13,7 @@ import (
 var regexpValidatorNamespacePrefix = regexp.MustCompile(`^\w+\.`)
 
 var (
-	ErrAlreadyExists = APIError{
-		Type:     "already_exists",
-		HTTPCode: http.StatusConflict,
-	}
+	// 400
 	ErrBadRequestFormat = APIError{
 		Type:        "bad_format",
 		HTTPCode:    http.StatusBadRequest,
@@ -27,6 +24,20 @@ var (
 		HTTPCode:    http.StatusBadRequest,
 		Description: "the data are not valid",
 	}
+
+	// 404
+	ErrNotFound = APIError{
+		Type:     "not_found",
+		HTTPCode: http.StatusNotFound,
+	}
+
+	// 40x
+	ErrAlreadyExists = APIError{
+		Type:     "already_exists",
+		HTTPCode: http.StatusConflict,
+	}
+
+	// 50x
 	ErrInternalServer = APIError{
 		Type:     "internal_server_error",
 		HTTPCode: http.StatusInternalServerError,
