@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/denouche/go-api-skeleton/storage/dao"
+	"github.com/denouche/go-api-skeleton/storage/dao/fake"
+	"github.com/denouche/go-api-skeleton/storage/dao/postgresql"
 	"github.com/denouche/go-api-skeleton/storage/model"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/go-playground/validator.v9"
@@ -32,9 +34,9 @@ func NewRouter(config *Config) *gin.Engine {
 
 	hc := &handlersContext{}
 	if config.Mock {
-		hc.db = dao.NewDatabaseFake()
+		hc.db = fake.NewDatabaseFake()
 	} else {
-		hc.db = dao.NewDatabasePostgreSQL(config.DBConnectionURI)
+		hc.db = postgresql.NewDatabasePostgreSQL(config.DBConnectionURI)
 	}
 	hc.validator = newValidator()
 
@@ -48,6 +50,13 @@ func NewRouter(config *Config) *gin.Engine {
 	public.Handle(http.MethodPut, "/users/:id", hc.UpdateUser)
 	public.Handle(http.MethodDelete, "/users/:id", hc.DeleteUser)
 	// end: user routes
+	// start: template routes
+	public.Handle(http.MethodGet, "/templates", hc.GetAllTemplates)
+	public.Handle(http.MethodPost, "/templates", hc.CreateTemplate)
+	public.Handle(http.MethodGet, "/templates/:id", hc.GetTemplate)
+	public.Handle(http.MethodPut, "/templates/:id", hc.UpdateTemplate)
+	public.Handle(http.MethodDelete, "/templates/:id", hc.DeleteTemplate)
+	// end: template routes
 
 	return router
 }
