@@ -17,7 +17,7 @@ type DAOError struct {
 	Type  Type
 }
 
-func newDAOError(t Type, cause error) error {
+func NewDAOError(t Type, cause error) error {
 	return &DAOError{
 		Type:  t,
 		Cause: cause,

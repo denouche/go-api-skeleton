@@ -1,11 +1,11 @@
-package dao
+package fake
 
 import (
 	"encoding/json"
 	"errors"
 	"time"
 
-	"github.com/allegro/bigcache"
+	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/denouche/go-api-skeleton/storage/model"
 	"github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
@@ -15,24 +15,15 @@ const (
 	cacheKeyUsers = "users"
 )
 
-type DatabaseFake struct {
-	Cache *bigcache.BigCache
+func (db *DatabaseFake) saveUsers(users []*model.User) {
+	data := make([]interface{}, 0)
+	for _, v := range users {
+		data = append(data, v)
+	}
+	db.save(cacheKeyUsers, data)
 }
 
-func (db *DatabaseFake) save(users []*model.User) {
-	b, err := json.Marshal(users)
-	if err != nil {
-		logrus.WithError(err).Error("Error while marshal fake users")
-		db.Cache.Set(cacheKeyUsers, []byte("[]"))
-		return
-	}
-	err = db.Cache.Set(cacheKeyUsers, b)
-	if err != nil {
-		logrus.WithError(err).Error("Error while saving fake users")
-	}
-}
-
-func (db *DatabaseFake) load() []*model.User {
+func (db *DatabaseFake) loadUsers() []*model.User {
 	users := make([]*model.User, 0)
 	b, err := db.Cache.Get(cacheKeyUsers)
 	if err != nil {
@@ -45,54 +36,44 @@ func (db *DatabaseFake) load() []*model.User {
 	return users
 }
 
-func NewDatabaseFake() Database {
-	cache, err := bigcache.NewBigCache(bigcache.DefaultConfig(time.Minute))
-	if err != nil {
-		logrus.WithError(err).Fatal("Error while instantiate cache")
-	}
-	return &DatabaseFake{
-		Cache: cache,
-	}
-}
-
 func (db *DatabaseFake) GetAllUsers() ([]*model.User, error) {
-	return db.load(), nil
+	return db.loadUsers(), nil
 }
 
 func (db *DatabaseFake) GetUsersByID(userID string) (*model.User, error) {
-	users := db.load()
+	users := db.loadUsers()
 	for _, u := range users {
 		if u.ID == userID {
 			return u, nil
 		}
 	}
-	return nil, newDAOError(ErrTypeNotFound, errors.New("user not found"))
+	return nil, dao.NewDAOError(dao.ErrTypeNotFound, errors.New("user not found"))
 }
 
 func (db *DatabaseFake) CreateUser(user *model.User) error {
 	user.ID = uuid.NewV4().String()
 	user.CreatedAt = time.Now()
 
-	users := db.load()
+	users := db.loadUsers()
 	users = append(users, user)
-	db.save(users)
+	db.saveUsers(users)
 	return nil
 }
 
 func (db *DatabaseFake) DeleteUser(userID string) error {
-	users := db.load()
+	users := db.loadUsers()
 	newUsers := make([]*model.User, 0)
 	for _, u := range users {
 		if u.ID != userID {
 			newUsers = append(newUsers, u)
 		}
 	}
-	db.save(newUsers)
+	db.saveUsers(newUsers)
 	return nil
 }
 
 func (db *DatabaseFake) UpdateUser(user *model.User) error {
-	users := db.load()
+	users := db.loadUsers()
 	var foundUser *model.User
 	for _, u := range users {
 		if u.ID == user.ID {
@@ -102,13 +83,13 @@ func (db *DatabaseFake) UpdateUser(user *model.User) error {
 	}
 
 	if foundUser == nil {
-		return newDAOError(ErrTypeNotFound, errors.New("user not found"))
+		return dao.NewDAOError(dao.ErrTypeNotFound, errors.New("user not found"))
 	}
 
 	foundUser.UserEditable = user.UserEditable
 	now := time.Now()
 	foundUser.UpdatedAt = &now
-	db.save(users)
+	db.saveUsers(users)
 
 	*user = *foundUser
 	return nil

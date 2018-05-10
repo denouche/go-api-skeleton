@@ -50,7 +50,7 @@ func (hc *handlersContext) CreateUser(c *gin.Context) {
 	if e, ok := err.(*dao.DAOError); ok {
 		switch {
 		case e.Type == dao.ErrTypeDuplicate:
-			utils.JSONErrorWithMessage(c.Writer, model.ErrAlreadyExists, "User with the given email already exists")
+			utils.JSONErrorWithMessage(c.Writer, model.ErrAlreadyExists, "User already exists")
 			return
 		default:
 			logrus.WithError(err).WithField("type", e.Type).Error("error CreateUser: Error type not handled")

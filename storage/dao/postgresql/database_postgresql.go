@@ -1,8 +1,9 @@
-package dao
+package postgresql
 
 import (
 	"database/sql"
 
+	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 )
@@ -14,11 +15,11 @@ const (
 
 func handlePgError(e *pq.Error) error {
 	if e.Code == pgCodeUniqueViolation {
-		return newDAOError(ErrTypeDuplicate, e)
+		return dao.NewDAOError(dao.ErrTypeDuplicate, e)
 	}
 
 	if e.Code == pgCodeForeingKeyViolation {
-		return newDAOError(ErrTypeForeignKeyViolation, e)
+		return dao.NewDAOError(dao.ErrTypeForeignKeyViolation, e)
 	}
 	return e
 }
@@ -27,7 +28,7 @@ type DatabasePostgreSQL struct {
 	session *sql.DB
 }
 
-func NewDatabasePostgreSQL(connectionURI string) Database {
+func NewDatabasePostgreSQL(connectionURI string) dao.Database {
 	db, err := sql.Open("postgres", connectionURI)
 	if err != nil {
 		logrus.WithError(err).Fatal("Unable to get a connection to the postgres db")

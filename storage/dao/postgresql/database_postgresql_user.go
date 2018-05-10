@@ -1,8 +1,9 @@
-package dao
+package postgresql
 
 import (
 	"database/sql"
 
+	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/denouche/go-api-skeleton/storage/model"
 	"github.com/lib/pq"
 )
@@ -30,13 +31,13 @@ func (db *DatabasePostgreSQL) GetAllUsers() ([]*model.User, error) {
 	return us, nil
 }
 
-func (db *DatabasePostgreSQL) GetUsersByID(userID string) (*model.User, error) {
+func (db *DatabasePostgreSQL) GetUsersByID(id string) (*model.User, error) {
 	q := `
 		SELECT u.id, u.email, u.first_name, u.last_name, u.created_at, u.updated_at
 		FROM users.user u
 		WHERE u.id = $1
 	`
-	row := db.session.QueryRow(q, userID)
+	row := db.session.QueryRow(q, id)
 
 	u := model.User{}
 	err := row.Scan(&u.ID, &u.Email, &u.FirstName, &u.LastName, &u.CreatedAt, &u.UpdatedAt)
@@ -44,7 +45,7 @@ func (db *DatabasePostgreSQL) GetUsersByID(userID string) (*model.User, error) {
 		return nil, handlePgError(errPq)
 	}
 	if err == sql.ErrNoRows {
-		return nil, newDAOError(ErrTypeNotFound, err)
+		return nil, dao.NewDAOError(dao.ErrTypeNotFound, err)
 	}
 	return &u, err
 }
@@ -67,13 +68,13 @@ func (db *DatabasePostgreSQL) CreateUser(user *model.User) error {
 	return err
 }
 
-func (db *DatabasePostgreSQL) DeleteUser(userID string) error {
+func (db *DatabasePostgreSQL) DeleteUser(id string) error {
 	q := `
 		DELETE FROM users.user
 		WHERE id = $1
 	`
 
-	_, err := db.session.Exec(q, userID)
+	_, err := db.session.Exec(q, id)
 	if errPq, ok := err.(*pq.Error); ok {
 		return handlePgError(errPq)
 	}
@@ -84,15 +85,15 @@ func (db *DatabasePostgreSQL) UpdateUser(user *model.User) error {
 	q := `
 		UPDATE users.user
 		SET
-			email = $1,
-			first_name = $2,
-			last_name = $3
-		WHERE id = $4
+			email = $2,
+			first_name = $3,
+			last_name = $4
+		WHERE id = $1
 		RETURNING updated_at
 	`
 
 	err := db.session.
-		QueryRow(q, user.Email, user.FirstName, user.LastName, user.ID).
+		QueryRow(q, user.ID, user.Email, user.FirstName, user.LastName).
 		Scan(&user.UpdatedAt)
 	if errPq, ok := err.(*pq.Error); ok {
 		return handlePgError(errPq)
