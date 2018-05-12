@@ -6,6 +6,7 @@ import (
 
 	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/denouche/go-api-skeleton/storage/model"
+	"github.com/denouche/go-api-skeleton/storage/validators"
 	"github.com/denouche/go-api-skeleton/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -38,7 +39,7 @@ func (hc *handlersContext) CreateTemplate(c *gin.Context) {
 
 	err = hc.validator.StructCtx(c, templateToCreate)
 	if err != nil {
-		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
+		utils.JSONError(c.Writer, validators.NewDataValidationAPIError(err))
 		return
 	}
 
@@ -71,7 +72,7 @@ func (hc *handlersContext) GetTemplate(c *gin.Context) {
 
 	err := hc.validator.VarCtx(c, templateID, "uuid4")
 	if err != nil {
-		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
+		utils.JSONError(c.Writer, validators.NewDataValidationAPIError(err))
 		return
 	}
 
@@ -105,7 +106,7 @@ func (hc *handlersContext) DeleteTemplate(c *gin.Context) {
 
 	err := hc.validator.VarCtx(c, templateID, "uuid4")
 	if err != nil {
-		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
+		utils.JSONError(c.Writer, validators.NewDataValidationAPIError(err))
 		return
 	}
 
@@ -152,7 +153,7 @@ func (hc *handlersContext) UpdateTemplate(c *gin.Context) {
 
 	err := hc.validator.VarCtx(c, templateID, "uuid4")
 	if err != nil {
-		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
+		utils.JSONError(c.Writer, validators.NewDataValidationAPIError(err))
 		return
 	}
 
@@ -191,7 +192,7 @@ func (hc *handlersContext) UpdateTemplate(c *gin.Context) {
 
 	err = hc.validator.StructCtx(c, templateToUpdate)
 	if err != nil {
-		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
+		utils.JSONError(c.Writer, validators.NewDataValidationAPIError(err))
 		return
 	}
 
