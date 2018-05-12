@@ -36,7 +36,7 @@ func (hc *handlersContext) CreateUser(c *gin.Context) {
 		return
 	}
 
-	err = hc.validator.Struct(userToCreate)
+	err = hc.validator.StructCtx(c, userToCreate)
 	if err != nil {
 		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
 		return
@@ -69,7 +69,7 @@ func (hc *handlersContext) CreateUser(c *gin.Context) {
 func (hc *handlersContext) GetUser(c *gin.Context) {
 	userID := c.Param("id")
 
-	err := hc.validator.Var(userID, "uuid4")
+	err := hc.validator.VarCtx(c, userID, "uuid4")
 	if err != nil {
 		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
 		return
@@ -103,7 +103,7 @@ func (hc *handlersContext) GetUser(c *gin.Context) {
 func (hc *handlersContext) DeleteUser(c *gin.Context) {
 	userID := c.Param("id")
 
-	err := hc.validator.Var(userID, "uuid4")
+	err := hc.validator.VarCtx(c, userID, "uuid4")
 	if err != nil {
 		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
 		return
@@ -150,7 +150,7 @@ func (hc *handlersContext) DeleteUser(c *gin.Context) {
 func (hc *handlersContext) UpdateUser(c *gin.Context) {
 	userID := c.Param("id")
 
-	err := hc.validator.Var(userID, "uuid4")
+	err := hc.validator.VarCtx(c, userID, "uuid4")
 	if err != nil {
 		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
 		return
@@ -189,7 +189,7 @@ func (hc *handlersContext) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	err = hc.validator.Struct(userToUpdate)
+	err = hc.validator.StructCtx(c, userToUpdate)
 	if err != nil {
 		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
 		return

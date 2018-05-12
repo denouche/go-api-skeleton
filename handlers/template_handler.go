@@ -36,7 +36,7 @@ func (hc *handlersContext) CreateTemplate(c *gin.Context) {
 		return
 	}
 
-	err = hc.validator.Struct(templateToCreate)
+	err = hc.validator.StructCtx(c, templateToCreate)
 	if err != nil {
 		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
 		return
@@ -69,7 +69,7 @@ func (hc *handlersContext) CreateTemplate(c *gin.Context) {
 func (hc *handlersContext) GetTemplate(c *gin.Context) {
 	templateID := c.Param("id")
 
-	err := hc.validator.Var(templateID, "uuid4")
+	err := hc.validator.VarCtx(c, templateID, "uuid4")
 	if err != nil {
 		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
 		return
@@ -103,7 +103,7 @@ func (hc *handlersContext) GetTemplate(c *gin.Context) {
 func (hc *handlersContext) DeleteTemplate(c *gin.Context) {
 	templateID := c.Param("id")
 
-	err := hc.validator.Var(templateID, "uuid4")
+	err := hc.validator.VarCtx(c, templateID, "uuid4")
 	if err != nil {
 		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
 		return
@@ -150,7 +150,7 @@ func (hc *handlersContext) DeleteTemplate(c *gin.Context) {
 func (hc *handlersContext) UpdateTemplate(c *gin.Context) {
 	templateID := c.Param("id")
 
-	err := hc.validator.Var(templateID, "uuid4")
+	err := hc.validator.VarCtx(c, templateID, "uuid4")
 	if err != nil {
 		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
 		return
@@ -189,7 +189,7 @@ func (hc *handlersContext) UpdateTemplate(c *gin.Context) {
 		return
 	}
 
-	err = hc.validator.Struct(templateToUpdate)
+	err = hc.validator.StructCtx(c, templateToUpdate)
 	if err != nil {
 		utils.JSONError(c.Writer, model.NewDataValidationAPIError(err))
 		return

@@ -74,7 +74,7 @@ func newValidator() *validator.Validate {
 
 	for k, v := range model.CustomValidators {
 		if v.Validator != nil {
-			va.RegisterValidation(k, v.Validator)
+			va.RegisterValidationCtx(k, v.Validator)
 		}
 	}
 

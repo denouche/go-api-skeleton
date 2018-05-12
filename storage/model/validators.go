@@ -1,6 +1,7 @@
 package model
 
 import (
+	"context"
 	"strings"
 
 	"gopkg.in/go-playground/validator.v9"
@@ -20,10 +21,10 @@ var (
 
 type customValidator struct {
 	Message   string
-	Validator validator.Func
+	Validator validator.FuncCtx
 }
 
-func validateEnum(fl validator.FieldLevel) bool {
+func validateEnum(ctx context.Context, fl validator.FieldLevel) bool {
 	for _, v := range strings.Split(fl.Param(), " ") {
 		if v == fl.Field().String() {
 			return true
