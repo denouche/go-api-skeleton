@@ -8,7 +8,7 @@ import (
 	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/denouche/go-api-skeleton/storage/dao/fake"
 	"github.com/denouche/go-api-skeleton/storage/dao/postgresql"
-	"github.com/denouche/go-api-skeleton/storage/model"
+	"github.com/denouche/go-api-skeleton/storage/validators"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -72,7 +72,7 @@ func newValidator() *validator.Validate {
 		return name[0]
 	})
 
-	for k, v := range model.CustomValidators {
+	for k, v := range validators.CustomValidators {
 		if v.Validator != nil {
 			va.RegisterValidationCtx(k, v.Validator)
 		}

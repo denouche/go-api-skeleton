@@ -1,4 +1,4 @@
-package model
+package validators
 
 import (
 	"context"

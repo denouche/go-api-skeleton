@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/denouche/go-api-skeleton/storage/validators"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -60,8 +61,8 @@ func NewDataValidationAPIError(err error) APIError {
 		} else {
 			for _, e := range err.(validator.ValidationErrors) {
 				reason := e.Tag()
-				if _, ok := CustomValidators[e.Tag()]; ok {
-					reason = truncatingSprintf(CustomValidators[e.Tag()].Message, e.Param())
+				if _, ok := validators.CustomValidators[e.Tag()]; ok {
+					reason = truncatingSprintf(validators.CustomValidators[e.Tag()].Message, e.Param())
 				}
 
 				namespaceWithoutStructName := regexpValidatorNamespacePrefix.ReplaceAllString(e.Namespace(), "")
