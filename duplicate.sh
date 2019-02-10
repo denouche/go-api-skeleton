@@ -6,6 +6,7 @@ echo "What is the namespace and project name? (Eg. github.com/foo/bar)"
 read NEW_PROJECT_NAME
 
 find . -iname '*.go' -exec sed -i "s|${OLD_PROJECT_NAME}|${NEW_PROJECT_NAME}|g" {} \;
+sed -i "s|${OLD_PROJECT_NAME}|${NEW_PROJECT_NAME}|g" Makefile Dockerfile
 
 main()
 {
