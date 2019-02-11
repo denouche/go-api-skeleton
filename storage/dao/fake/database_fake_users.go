@@ -7,8 +7,8 @@ import (
 
 	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/denouche/go-api-skeleton/storage/model"
+	"github.com/denouche/go-api-skeleton/utils"
 	"github.com/satori/go.uuid"
-	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -31,7 +31,8 @@ func (db *DatabaseFake) loadUsers() []*model.User {
 	}
 	err = json.Unmarshal(b, &users)
 	if err != nil {
-		logrus.WithError(err).Error("Error while unmarshal fake users")
+		utils.GetLogger(nil).Errorw("Error while unmarshal fake users",
+			"error", err)
 	}
 	return users
 }

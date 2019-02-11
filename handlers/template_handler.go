@@ -9,13 +9,13 @@ import (
 	"github.com/denouche/go-api-skeleton/storage/validators"
 	"github.com/denouche/go-api-skeleton/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 func (hc *handlersContext) GetAllTemplates(c *gin.Context) {
 	templates, err := hc.db.GetAllTemplates()
 	if err != nil {
-		logrus.WithError(err).Error("error while getting templates")
+		utils.GetLogger(nil).Errorw("error while getting templates",
+			"error", err)
 		utils.JSONErrorWithMessage(c.Writer, model.ErrInternalServer, "Error while getting templates")
 		return
 	}
@@ -25,7 +25,8 @@ func (hc *handlersContext) GetAllTemplates(c *gin.Context) {
 func (hc *handlersContext) CreateTemplate(c *gin.Context) {
 	b, err := c.GetRawData()
 	if err != nil {
-		logrus.WithError(err).Error("error while creating template, read data fail")
+		utils.GetLogger(nil).Errorw("error while creating template, read data fail",
+			"error", err)
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -54,12 +55,15 @@ func (hc *handlersContext) CreateTemplate(c *gin.Context) {
 			utils.JSONErrorWithMessage(c.Writer, model.ErrAlreadyExists, "Template already exists")
 			return
 		default:
-			logrus.WithError(err).WithField("type", e.Type).Error("error CreateTemplate: Error type not handled")
+			utils.GetLogger(nil).Errorw("error CreateTemplate: Error type not handled",
+				"type", e.Type,
+				"error", err)
 			utils.JSONError(c.Writer, model.ErrInternalServer)
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("error while creating template")
+		utils.GetLogger(nil).Errorw("error while creating template",
+			"error", err)
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -83,12 +87,15 @@ func (hc *handlersContext) GetTemplate(c *gin.Context) {
 			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "Template not found")
 			return
 		default:
-			logrus.WithError(err).WithField("type", e.Type).Error("error GetTemplate: get template error type not handled")
+			utils.GetLogger(nil).Errorw("error GetTemplate: get template error type not handled",
+				"type", e.Type,
+				"error", err)
 			utils.JSONError(c.Writer, model.ErrInternalServer)
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("error while get template")
+		utils.GetLogger(nil).Errorw("error while get template",
+			"error", err)
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -118,12 +125,15 @@ func (hc *handlersContext) DeleteTemplate(c *gin.Context) {
 			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "Template to delete not found")
 			return
 		default:
-			logrus.WithError(err).WithField("type", e.Type).Error("error DeleteTemplate: get template error type not handled")
+			utils.GetLogger(nil).Errorw("error DeleteTemplate: get template error type not handled",
+				"type", e.Type,
+				"error", err)
 			utils.JSONError(c.Writer, model.ErrInternalServer)
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("error while get template to delete")
+		utils.GetLogger(nil).Errorw("error while get template to delete",
+			"error", err)
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -135,12 +145,15 @@ func (hc *handlersContext) DeleteTemplate(c *gin.Context) {
 			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "Template to delete not found")
 			return
 		default:
-			logrus.WithError(err).WithField("type", e.Type).Error("error DeleteTemplate: Error type not handled")
+			utils.GetLogger(nil).Errorw("error DeleteTemplate: Error type not handled",
+				"type", e.Type,
+				"error", err)
 			utils.JSONError(c.Writer, model.ErrInternalServer)
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("error while deleting template")
+		utils.GetLogger(nil).Errorw("error while deleting template",
+			"error", err)
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -165,12 +178,15 @@ func (hc *handlersContext) UpdateTemplate(c *gin.Context) {
 			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "Template to update not found")
 			return
 		default:
-			logrus.WithError(err).WithField("type", e.Type).Error("deleteTemplate: get template error type not handled")
+			utils.GetLogger(nil).Errorw("deleteTemplate: get template error type not handled",
+				"type", e.Type,
+				"error", err)
 			utils.JSONError(c.Writer, model.ErrInternalServer)
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("error while get template to update")
+		utils.GetLogger(nil).Errorw("error while get template to update",
+			"error", err)
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -178,7 +194,8 @@ func (hc *handlersContext) UpdateTemplate(c *gin.Context) {
 	// get body and verify data
 	b, err := c.GetRawData()
 	if err != nil {
-		logrus.WithError(err).Error("error while updating template, read data fail")
+		utils.GetLogger(nil).Errorw("error while updating template, read data fail",
+			"error", err)
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -206,12 +223,15 @@ func (hc *handlersContext) UpdateTemplate(c *gin.Context) {
 			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "Template to update not found")
 			return
 		default:
-			logrus.WithError(err).WithField("type", e.Type).Error("error UpdateTemplate: Error type not handled")
+			utils.GetLogger(nil).Errorw("error UpdateTemplate: Error type not handled",
+				"type", e.Type,
+				"error", err)
 			utils.JSONError(c.Writer, model.ErrInternalServer)
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("error while deleting template")
+		utils.GetLogger(nil).Errorw("error while deleting template",
+			"error", err)
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}

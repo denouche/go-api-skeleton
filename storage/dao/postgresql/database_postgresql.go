@@ -4,8 +4,8 @@ import (
 	"database/sql"
 
 	"github.com/denouche/go-api-skeleton/storage/dao"
+	"github.com/denouche/go-api-skeleton/utils"
 	"github.com/lib/pq"
-	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -31,11 +31,13 @@ type DatabasePostgreSQL struct {
 func NewDatabasePostgreSQL(connectionURI string) dao.Database {
 	db, err := sql.Open("postgres", connectionURI)
 	if err != nil {
-		logrus.WithError(err).Fatal("Unable to get a connection to the postgres db")
+		utils.GetLogger(nil).Fatalw("Unable to get a connection to the postgres db",
+			"error", err)
 	}
 	err = db.Ping()
 	if err != nil {
-		logrus.WithError(err).Fatal("Unable to ping the postgres db")
+		utils.GetLogger(nil).Fatalw("Unable to ping the postgres db",
+			"error", err)
 	}
 	return &DatabasePostgreSQL{session: db}
 }
