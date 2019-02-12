@@ -5,10 +5,11 @@ import (
 	"errors"
 	"time"
 
+	"github.com/denouche/go-api-skeleton/utils"
+
 	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/denouche/go-api-skeleton/storage/model"
 	"github.com/satori/go.uuid"
-	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -31,7 +32,7 @@ func (db *DatabaseFake) loadTemplates() []*model.Template {
 	}
 	err = json.Unmarshal(b, &templates)
 	if err != nil {
-		logrus.WithError(err).Error("Error while unmarshal fake templates")
+		utils.GetLogger().WithError(err).Error("Error while unmarshal fake templates")
 	}
 	return templates
 }

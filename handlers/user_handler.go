@@ -9,13 +9,12 @@ import (
 	"github.com/denouche/go-api-skeleton/storage/validators"
 	"github.com/denouche/go-api-skeleton/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 func (hc *handlersContext) GetAllUsers(c *gin.Context) {
 	users, err := hc.db.GetAllUsers()
 	if err != nil {
-		logrus.WithError(err).Error("error while getting users")
+		utils.GetLoggerFromCtx(c).WithError(err).Error("error while getting users")
 		utils.JSONErrorWithMessage(c.Writer, model.ErrInternalServer, "Error while getting users")
 		return
 	}
@@ -25,7 +24,7 @@ func (hc *handlersContext) GetAllUsers(c *gin.Context) {
 func (hc *handlersContext) CreateUser(c *gin.Context) {
 	b, err := c.GetRawData()
 	if err != nil {
-		logrus.WithError(err).Error("error while creating user, read data fail")
+		utils.GetLoggerFromCtx(c).WithError(err).Error("error while creating user, read data fail")
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -54,12 +53,12 @@ func (hc *handlersContext) CreateUser(c *gin.Context) {
 			utils.JSONErrorWithMessage(c.Writer, model.ErrAlreadyExists, "User already exists")
 			return
 		default:
-			logrus.WithError(err).WithField("type", e.Type).Error("error CreateUser: Error type not handled")
+			utils.GetLoggerFromCtx(c).WithError(err).WithField("type", e.Type).Error("error CreateUser: Error type not handled")
 			utils.JSONError(c.Writer, model.ErrInternalServer)
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("error while creating user")
+		utils.GetLoggerFromCtx(c).WithError(err).Error("error while creating user")
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -83,12 +82,12 @@ func (hc *handlersContext) GetUser(c *gin.Context) {
 			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "User not found")
 			return
 		default:
-			logrus.WithError(err).WithField("type", e.Type).Error("error GetUser: get user error type not handled")
+			utils.GetLoggerFromCtx(c).WithError(err).WithField("type", e.Type).Error("error GetUser: get user error type not handled")
 			utils.JSONError(c.Writer, model.ErrInternalServer)
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("error while get user")
+		utils.GetLoggerFromCtx(c).WithError(err).Error("error while get user")
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -118,12 +117,12 @@ func (hc *handlersContext) DeleteUser(c *gin.Context) {
 			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "User to delete not found")
 			return
 		default:
-			logrus.WithError(err).WithField("type", e.Type).Error("error DeleteUser: get user error type not handled")
+			utils.GetLoggerFromCtx(c).WithError(err).WithField("type", e.Type).Error("error DeleteUser: get user error type not handled")
 			utils.JSONError(c.Writer, model.ErrInternalServer)
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("error while get user to delete")
+		utils.GetLoggerFromCtx(c).WithError(err).Error("error while get user to delete")
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -135,12 +134,12 @@ func (hc *handlersContext) DeleteUser(c *gin.Context) {
 			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "User to delete not found")
 			return
 		default:
-			logrus.WithError(err).WithField("type", e.Type).Error("error DeleteUser: Error type not handled")
+			utils.GetLoggerFromCtx(c).WithError(err).WithField("type", e.Type).Error("error DeleteUser: Error type not handled")
 			utils.JSONError(c.Writer, model.ErrInternalServer)
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("error while deleting user")
+		utils.GetLoggerFromCtx(c).WithError(err).Error("error while deleting user")
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -165,12 +164,12 @@ func (hc *handlersContext) UpdateUser(c *gin.Context) {
 			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "User to update not found")
 			return
 		default:
-			logrus.WithError(err).WithField("type", e.Type).Error("deleteUser: get user error type not handled")
+			utils.GetLoggerFromCtx(c).WithError(err).WithField("type", e.Type).Error("deleteUser: get user error type not handled")
 			utils.JSONError(c.Writer, model.ErrInternalServer)
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("error while get user to update")
+		utils.GetLoggerFromCtx(c).WithError(err).Error("error while get user to update")
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -178,7 +177,7 @@ func (hc *handlersContext) UpdateUser(c *gin.Context) {
 	// get body and verify data
 	b, err := c.GetRawData()
 	if err != nil {
-		logrus.WithError(err).Error("error while updating user, read data fail")
+		utils.GetLoggerFromCtx(c).WithError(err).Error("error while updating user, read data fail")
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
@@ -206,12 +205,12 @@ func (hc *handlersContext) UpdateUser(c *gin.Context) {
 			utils.JSONErrorWithMessage(c.Writer, model.ErrNotFound, "User to update not found")
 			return
 		default:
-			logrus.WithError(err).WithField("type", e.Type).Error("error UpdateUser: Error type not handled")
+			utils.GetLoggerFromCtx(c).WithError(err).WithField("type", e.Type).Error("error UpdateUser: Error type not handled")
 			utils.JSONError(c.Writer, model.ErrInternalServer)
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("error while deleting user")
+		utils.GetLoggerFromCtx(c).WithError(err).Error("error while deleting user")
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}

@@ -36,11 +36,7 @@ var rootCmd = &cobra.Command{
 	Use:   "go-api-skeleton",
 	Short: "go-api-skeleton",
 	Run: func(cmd *cobra.Command, args []string) {
-		logLevel := utils.ParseLogrusLevel(config.LogLevel)
-		logrus.SetLevel(logLevel)
-
-		logFormat := utils.ParseLogrusFormat(config.LogFormat)
-		logrus.SetFormatter(logFormat)
+		utils.InitLogger(config.LogLevel, config.LogFormat)
 
 		logrus.
 			WithField(parameterConfigurationFile, cfgFile).
@@ -98,9 +94,9 @@ func initConfig() {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
 
+	config.LogLevel = viper.GetString(parameterLogLevel)
+	config.LogFormat = viper.GetString(parameterLogFormat)
 	config.Mock = viper.GetBool(parameterMock)
 	config.DBConnectionURI = viper.GetString(parameterDBConnectionURI)
 	config.Port = viper.GetInt(parameterPort)
-	config.LogLevel = viper.GetString(parameterLogLevel)
-	config.LogFormat = viper.GetString(parameterLogFormat)
 }

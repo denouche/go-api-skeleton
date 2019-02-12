@@ -15,7 +15,7 @@ import (
 func (hc *handlersContext) GetAllTemplates(c *gin.Context) {
 	templates, err := hc.db.GetAllTemplates()
 	if err != nil {
-		logrus.WithError(err).Error("error while getting templates")
+		utils.GetLoggerFromCtx(c).WithError(err).Error("error while getting templates")
 		utils.JSONErrorWithMessage(c.Writer, model.ErrInternalServer, "Error while getting templates")
 		return
 	}
@@ -25,7 +25,7 @@ func (hc *handlersContext) GetAllTemplates(c *gin.Context) {
 func (hc *handlersContext) CreateTemplate(c *gin.Context) {
 	b, err := c.GetRawData()
 	if err != nil {
-		logrus.WithError(err).Error("error while creating template, read data fail")
+		utils.GetLoggerFromCtx(c).WithError(err).Error("error while creating template, read data fail")
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}

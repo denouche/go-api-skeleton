@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/denouche/go-api-skeleton/storage/model"
-	"github.com/sirupsen/logrus"
+	"github.com/denouche/go-api-skeleton/utils"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -16,7 +16,7 @@ func NewDataValidationAPIError(err error) model.APIError {
 	apiErr := model.ErrDataValidation
 	if err != nil {
 		if _, ok := err.(*validator.InvalidValidationError); ok {
-			logrus.WithError(err).WithField("templateAPIErr", apiErr).Error("InvalidValidationError")
+			utils.GetLogger().WithError(err).WithField("templateAPIErr", apiErr).Error("InvalidValidationError")
 		} else {
 			for _, e := range err.(validator.ValidationErrors) {
 				reason := e.Tag()
