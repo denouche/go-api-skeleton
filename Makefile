@@ -3,7 +3,7 @@ help:
 	@echo "make start"
 
 start:
-	go run main.go --config config/local.json --environment development --port 8080
+	go run main.go --config config/local.json
 
 deps:
 	GO111MODULE=on go mod vendor

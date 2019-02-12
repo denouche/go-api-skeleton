@@ -5,7 +5,6 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/denouche/go-api-skeleton/middlewares"
 	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/denouche/go-api-skeleton/storage/dao/fake"
 	"github.com/denouche/go-api-skeleton/storage/dao/postgresql"
@@ -18,7 +17,8 @@ type Config struct {
 	Mock            bool
 	DBConnectionURI string
 	Port            int
-	Environment     string
+	LogLevel        string
+	LogFormat       string
 }
 
 type handlersContext struct {
@@ -27,14 +27,10 @@ type handlersContext struct {
 }
 
 func NewRouter(config *Config) *gin.Engine {
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.DebugMode)
 
-	router := gin.New()
+	router := gin.Default()
 	router.HandleMethodNotAllowed = true
-
-	router.Use(gin.Recovery())
-	router.Use(middlewares.GetHTTPLoggerMiddleware(config.Environment))
-	router.Use(middlewares.GetLoggerMiddleware(config.Environment))
 
 	hc := &handlersContext{}
 	if config.Mock {

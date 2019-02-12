@@ -6,6 +6,7 @@ import (
 
 	"github.com/denouche/go-api-skeleton/handlers"
 	"github.com/denouche/go-api-skeleton/utils"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -17,14 +18,16 @@ var (
 
 const (
 	parameterConfigurationFile = "config"
+	parameterLogLevel          = "loglevel"
 	parameterMock              = "mock"
-	parameterEnvironment       = "environment"
+	parameterLogFormat         = "logformat"
 	parameterDBConnectionURI   = "dbconnectionuri"
 	parameterPort              = "port"
 )
 
 var (
-	defaultEnvironment     = "production"
+	defaultLogLevel        = logrus.WarnLevel.String()
+	defaultLogFormat       = utils.LogFormatText
 	defaultDBConnectionURI = ""
 	defaultPort            = 80
 )
@@ -33,13 +36,20 @@ var rootCmd = &cobra.Command{
 	Use:   "go-api-skeleton",
 	Short: "go-api-skeleton",
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.GetLoggerForEnvironment(config.Environment).Sugar().
-			Infow("Configuration",
-				parameterConfigurationFile, cfgFile,
-				parameterEnvironment, config.Environment,
-				parameterMock, config.Mock,
-				parameterPort, config.Port,
-				parameterDBConnectionURI, config.DBConnectionURI)
+		logLevel := utils.ParseLogrusLevel(config.LogLevel)
+		logrus.SetLevel(logLevel)
+
+		logFormat := utils.ParseLogrusFormat(config.LogFormat)
+		logrus.SetFormatter(logFormat)
+
+		logrus.
+			WithField(parameterConfigurationFile, cfgFile).
+			WithField(parameterMock, config.Mock).
+			WithField(parameterLogLevel, config.LogLevel).
+			WithField(parameterLogFormat, config.LogFormat).
+			WithField(parameterPort, config.Port).
+			WithField(parameterDBConnectionURI, config.DBConnectionURI).
+			Warn("Configuration")
 
 		router := handlers.NewRouter(config)
 		router.Run(fmt.Sprintf(":%d", config.Port))
@@ -58,8 +68,11 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, parameterConfigurationFile, "", "Config file. All flags given in command line will override the values from this file.")
 
-	rootCmd.Flags().String(parameterEnvironment, defaultEnvironment, "Use this flag to set the current environemnt")
-	viper.BindPFlag(parameterEnvironment, rootCmd.Flags().Lookup(parameterEnvironment))
+	rootCmd.Flags().String(parameterLogLevel, defaultLogLevel, "Use this flag to set the logging level")
+	viper.BindPFlag(parameterLogLevel, rootCmd.Flags().Lookup(parameterLogLevel))
+
+	rootCmd.Flags().String(parameterLogFormat, defaultLogFormat, "Use this flag to set the logging format")
+	viper.BindPFlag(parameterLogFormat, rootCmd.Flags().Lookup(parameterLogFormat))
 
 	rootCmd.Flags().String(parameterDBConnectionURI, defaultDBConnectionURI, "Use this flag to set the db connection URI")
 	viper.BindPFlag(parameterDBConnectionURI, rootCmd.Flags().Lookup(parameterDBConnectionURI))
@@ -86,7 +99,8 @@ func initConfig() {
 	}
 
 	config.Mock = viper.GetBool(parameterMock)
-	config.Port = viper.GetInt(parameterPort)
-	config.Environment = viper.GetString(parameterEnvironment)
 	config.DBConnectionURI = viper.GetString(parameterDBConnectionURI)
+	config.Port = viper.GetInt(parameterPort)
+	config.LogLevel = viper.GetString(parameterLogLevel)
+	config.LogFormat = viper.GetString(parameterLogFormat)
 }

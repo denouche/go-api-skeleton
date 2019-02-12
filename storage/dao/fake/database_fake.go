@@ -1,12 +1,13 @@
 package fake
 
 import (
-	"encoding/json"
 	"time"
+
+	"encoding/json"
 
 	"github.com/allegro/bigcache"
 	"github.com/denouche/go-api-skeleton/storage/dao"
-	"github.com/denouche/go-api-skeleton/utils"
+	"github.com/sirupsen/logrus"
 )
 
 type DatabaseFake struct {
@@ -16,8 +17,7 @@ type DatabaseFake struct {
 func NewDatabaseFake() dao.Database {
 	cache, err := bigcache.NewBigCache(bigcache.DefaultConfig(time.Minute))
 	if err != nil {
-		utils.GetLogger(nil).Errorw("Error while instantiate cache",
-			"error", err)
+		logrus.WithError(err).Fatal("Error while instantiate cache")
 	}
 	return &DatabaseFake{
 		Cache: cache,
@@ -27,16 +27,12 @@ func NewDatabaseFake() dao.Database {
 func (db *DatabaseFake) save(key string, data []interface{}) {
 	b, err := json.Marshal(data)
 	if err != nil {
-		utils.GetLogger(nil).Errorw("Error while marshal fake",
-			"key", key,
-			"error", err)
+		logrus.WithError(err).Errorf("Error while marshal fake %s", key)
 		db.Cache.Set(key, []byte("[]"))
 		return
 	}
 	err = db.Cache.Set(key, b)
 	if err != nil {
-		utils.GetLogger(nil).Errorw("Error while saving fake",
-			"key", key,
-			"error", err)
+		logrus.WithError(err).Errorf("Error while saving fake %s", key)
 	}
 }
