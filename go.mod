@@ -1,7 +1,7 @@
 module github.com/denouche/go-api-skeleton
 
 require (
-	github.com/allegro/bigcache v1.1.0
+	github.com/allegro/bigcache v1.2.0
 	github.com/gin-contrib/sse v0.0.0-20190125020943-a7658810eb74 // indirect
 	github.com/gin-gonic/gin v1.3.0
 	github.com/go-playground/locales v0.12.1 // indirect
