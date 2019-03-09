@@ -33,10 +33,12 @@ func InitLogger(ll, lf string) {
 }
 
 func GetLoggerFromCtx(c *gin.Context) *logrus.Entry {
-	if logger, ok := c.Get(ContextKeyLogger); ok {
-		logEntry, assertionOk := logger.(*logrus.Entry)
-		if assertionOk {
-			return logEntry
+	if c != nil {
+		if logger, ok := c.Get(ContextKeyLogger); ok {
+			logEntry, assertionOk := logger.(*logrus.Entry)
+			if assertionOk {
+				return logEntry
+			}
 		}
 	}
 	return logrus.NewEntry(GetLogger())
