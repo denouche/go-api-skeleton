@@ -70,7 +70,7 @@ func (hc *handlersContext) CreateTemplate(c *gin.Context) {
 func (hc *handlersContext) GetTemplate(c *gin.Context) {
 	templateID := c.Param("id")
 
-	err := hc.validator.VarCtx(c, templateID, "uuid4")
+	err := hc.validator.VarCtx(c, templateID, "required")
 	if err != nil {
 		utils.JSONError(c.Writer, validators.NewDataValidationAPIError(err))
 		return
@@ -104,7 +104,7 @@ func (hc *handlersContext) GetTemplate(c *gin.Context) {
 func (hc *handlersContext) DeleteTemplate(c *gin.Context) {
 	templateID := c.Param("id")
 
-	err := hc.validator.VarCtx(c, templateID, "uuid4")
+	err := hc.validator.VarCtx(c, templateID, "required")
 	if err != nil {
 		utils.JSONError(c.Writer, validators.NewDataValidationAPIError(err))
 		return
@@ -151,7 +151,7 @@ func (hc *handlersContext) DeleteTemplate(c *gin.Context) {
 func (hc *handlersContext) UpdateTemplate(c *gin.Context) {
 	templateID := c.Param("id")
 
-	err := hc.validator.VarCtx(c, templateID, "uuid4")
+	err := hc.validator.VarCtx(c, templateID, "required")
 	if err != nil {
 		utils.JSONError(c.Writer, validators.NewDataValidationAPIError(err))
 		return
@@ -211,7 +211,7 @@ func (hc *handlersContext) UpdateTemplate(c *gin.Context) {
 			return
 		}
 	} else if err != nil {
-		logrus.WithError(err).Error("error while deleting template")
+		logrus.WithError(err).Error("error while updating template")
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}

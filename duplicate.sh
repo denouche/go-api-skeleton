@@ -16,7 +16,7 @@ main()
         read ENTITY_NAME
         ENTITY_NAME_UP="${ENTITY_NAME^}"
 
-        echo "What is the postgresql schema to use for this entity?"
+        echo "What is the postgresql schema to use for this entity? (if you plan to use MongoDB you can ignore this question)"
         read ENTITY_SCHEMA
 
         cp handlers/template_handler.go handlers/${ENTITY_NAME}_handler.go
@@ -27,6 +27,14 @@ main()
         sed -i -r "s/template/${ENTITY_NAME}/g" storage/dao/postgresql/database_postgresql_${ENTITY_NAME}.go
         sed -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/dao/postgresql/database_postgresql_${ENTITY_NAME}.go
         sed -i -r "s/schema/${ENTITY_SCHEMA}/g" storage/dao/postgresql/database_postgresql_${ENTITY_NAME}.go
+
+        cp storage/dao/mongodb/database_mongodb_template.go storage/dao/mongodb/database_mongodb_${ENTITY_NAME}.go
+        sed -i -r "s/template/${ENTITY_NAME}/g" storage/dao/mongodb/database_mongodb_${ENTITY_NAME}.go
+        sed -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/dao/mongodb/database_mongodb_${ENTITY_NAME}.go
+
+        cp storage/dao/mock/database_mock_template.go storage/dao/mock/database_mock_${ENTITY_NAME}.go
+        sed -i -r "s/template/${ENTITY_NAME}/g" storage/dao/mock/database_mock_${ENTITY_NAME}.go
+        sed -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/dao/mock/database_mock_${ENTITY_NAME}.go
 
         cp storage/dao/fake/database_fake_template.go storage/dao/fake/database_fake_${ENTITY_NAME}.go
         sed -i -r "s/template/${ENTITY_NAME}/g" storage/dao/fake/database_fake_${ENTITY_NAME}.go

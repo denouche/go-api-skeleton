@@ -19,9 +19,10 @@ var (
 const (
 	parameterConfigurationFile = "config"
 	parameterLogLevel          = "loglevel"
-	parameterMock              = "mock"
 	parameterLogFormat         = "logformat"
 	parameterDBConnectionURI   = "dbconnectionuri"
+	parameterDBInMemory        = "dbinmemory"
+	parameterDBName            = "dbname"
 	parameterPort              = "port"
 )
 
@@ -29,7 +30,8 @@ var (
 	defaultLogLevel        = logrus.WarnLevel.String()
 	defaultLogFormat       = utils.LogFormatText
 	defaultDBConnectionURI = ""
-	defaultPort            = 80
+	defaultDBName          = ""
+	defaultPort            = 8080
 )
 
 var rootCmd = &cobra.Command{
@@ -40,15 +42,19 @@ var rootCmd = &cobra.Command{
 
 		logrus.
 			WithField(parameterConfigurationFile, cfgFile).
-			WithField(parameterMock, config.Mock).
 			WithField(parameterLogLevel, config.LogLevel).
 			WithField(parameterLogFormat, config.LogFormat).
 			WithField(parameterPort, config.Port).
+			WithField(parameterDBInMemory, config.Mock).
 			WithField(parameterDBConnectionURI, config.DBConnectionURI).
+			WithField(parameterDBName, config.DBName).
 			Warn("Configuration")
 
 		router := handlers.NewRouter(config)
-		router.Run(fmt.Sprintf(":%d", config.Port))
+		err := router.Run(fmt.Sprintf(":%d", config.Port))
+		if err != nil {
+			utils.GetLogger().WithError(err).Error("error while starting app")
+		}
 	},
 }
 
@@ -65,19 +71,22 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, parameterConfigurationFile, "", "Config file. All flags given in command line will override the values from this file.")
 
 	rootCmd.Flags().String(parameterLogLevel, defaultLogLevel, "Use this flag to set the logging level")
-	viper.BindPFlag(parameterLogLevel, rootCmd.Flags().Lookup(parameterLogLevel))
+	_ = viper.BindPFlag(parameterLogLevel, rootCmd.Flags().Lookup(parameterLogLevel))
 
 	rootCmd.Flags().String(parameterLogFormat, defaultLogFormat, "Use this flag to set the logging format")
-	viper.BindPFlag(parameterLogFormat, rootCmd.Flags().Lookup(parameterLogFormat))
-
-	rootCmd.Flags().String(parameterDBConnectionURI, defaultDBConnectionURI, "Use this flag to set the db connection URI")
-	viper.BindPFlag(parameterDBConnectionURI, rootCmd.Flags().Lookup(parameterDBConnectionURI))
+	_ = viper.BindPFlag(parameterLogFormat, rootCmd.Flags().Lookup(parameterLogFormat))
 
 	rootCmd.Flags().Int(parameterPort, defaultPort, "Use this flag to set the listening port of the api")
-	viper.BindPFlag(parameterPort, rootCmd.Flags().Lookup(parameterPort))
+	_ = viper.BindPFlag(parameterPort, rootCmd.Flags().Lookup(parameterPort))
 
-	rootCmd.Flags().Bool(parameterMock, false, "Use this flag to enable the mock mode")
-	viper.BindPFlag(parameterMock, rootCmd.Flags().Lookup(parameterMock))
+	rootCmd.Flags().String(parameterDBConnectionURI, defaultDBConnectionURI, "Use this flag to set the db connection URI")
+	_ = viper.BindPFlag(parameterDBConnectionURI, rootCmd.Flags().Lookup(parameterDBConnectionURI))
+
+	rootCmd.Flags().String(parameterDBName, defaultDBName, "Use this flag to set the db name. This parameter is used when using a MongoDB database")
+	_ = viper.BindPFlag(parameterDBName, rootCmd.Flags().Lookup(parameterDBName))
+
+	rootCmd.Flags().Bool(parameterDBInMemory, false, "Use this flag to enable the db in memory mode")
+	_ = viper.BindPFlag(parameterDBInMemory, rootCmd.Flags().Lookup(parameterDBInMemory))
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -96,7 +105,8 @@ func initConfig() {
 
 	config.LogLevel = viper.GetString(parameterLogLevel)
 	config.LogFormat = viper.GetString(parameterLogFormat)
-	config.Mock = viper.GetBool(parameterMock)
-	config.DBConnectionURI = viper.GetString(parameterDBConnectionURI)
 	config.Port = viper.GetInt(parameterPort)
+	config.DBConnectionURI = viper.GetString(parameterDBConnectionURI)
+	config.DBName = viper.GetString(parameterDBName)
+	config.DBInMemory = viper.GetBool(parameterDBInMemory)
 }

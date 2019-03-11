@@ -8,6 +8,8 @@ import (
 	"github.com/denouche/go-api-skeleton/middlewares"
 	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/denouche/go-api-skeleton/storage/dao/fake"
+	"github.com/denouche/go-api-skeleton/storage/dao/mock"
+	"github.com/denouche/go-api-skeleton/storage/dao/mongodb"
 	"github.com/denouche/go-api-skeleton/storage/dao/postgresql"
 	"github.com/denouche/go-api-skeleton/storage/validators"
 	"github.com/gin-gonic/gin"
@@ -16,7 +18,9 @@ import (
 
 type Config struct {
 	Mock            bool
+	DBInMemory      bool
 	DBConnectionURI string
+	DBName          string
 	Port            int
 	LogLevel        string
 	LogFormat       string
@@ -39,9 +43,15 @@ func NewRouter(config *Config) *gin.Engine {
 
 	hc := &handlersContext{}
 	if config.Mock {
+		hc.db = mock.NewDatabaseMock()
+	} else if config.DBInMemory {
 		hc.db = fake.NewDatabaseFake()
-	} else {
+	} else if strings.HasPrefix(config.DBConnectionURI, "postgresql://") {
 		hc.db = postgresql.NewDatabasePostgreSQL(config.DBConnectionURI)
+	} else if strings.HasPrefix(config.DBConnectionURI, "mongodb://") {
+		hc.db = mongodb.NewDatabaseMongoDB(config.DBConnectionURI, config.DBName) // TODO parameter
+	} else {
+		hc.db = fake.NewDatabaseFake()
 	}
 	hc.validator = newValidator()
 

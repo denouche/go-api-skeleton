@@ -2,5 +2,5 @@
   "loglevel":"debug",
   "logformat": "text",
   "port": "8080",
-  "dbconnectionuri": "postgresql://postgres:pwd@localhost/halfred?sslmode=disable"
+  "dbconnectionuri": "postgresql://postgres:pwd@localhost/databasename?sslmode=disable"
 }

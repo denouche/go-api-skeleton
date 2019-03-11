@@ -69,7 +69,7 @@ func (hc *handlersContext) CreateUser(c *gin.Context) {
 func (hc *handlersContext) GetUser(c *gin.Context) {
 	userID := c.Param("id")
 
-	err := hc.validator.VarCtx(c, userID, "uuid4")
+	err := hc.validator.VarCtx(c, userID, "required")
 	if err != nil {
 		utils.JSONError(c.Writer, validators.NewDataValidationAPIError(err))
 		return
@@ -103,7 +103,7 @@ func (hc *handlersContext) GetUser(c *gin.Context) {
 func (hc *handlersContext) DeleteUser(c *gin.Context) {
 	userID := c.Param("id")
 
-	err := hc.validator.VarCtx(c, userID, "uuid4")
+	err := hc.validator.VarCtx(c, userID, "required")
 	if err != nil {
 		utils.JSONError(c.Writer, validators.NewDataValidationAPIError(err))
 		return
@@ -150,7 +150,7 @@ func (hc *handlersContext) DeleteUser(c *gin.Context) {
 func (hc *handlersContext) UpdateUser(c *gin.Context) {
 	userID := c.Param("id")
 
-	err := hc.validator.VarCtx(c, userID, "uuid4")
+	err := hc.validator.VarCtx(c, userID, "required")
 	if err != nil {
 		utils.JSONError(c.Writer, validators.NewDataValidationAPIError(err))
 		return
@@ -210,7 +210,7 @@ func (hc *handlersContext) UpdateUser(c *gin.Context) {
 			return
 		}
 	} else if err != nil {
-		utils.GetLoggerFromCtx(c).WithError(err).Error("error while deleting user")
+		utils.GetLoggerFromCtx(c).WithError(err).Error("error while updating user")
 		utils.JSONError(c.Writer, model.ErrInternalServer)
 		return
 	}
