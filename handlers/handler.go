@@ -49,7 +49,7 @@ func NewRouter(config *Config) *gin.Engine {
 	} else if strings.HasPrefix(config.DBConnectionURI, "postgresql://") {
 		hc.db = postgresql.NewDatabasePostgreSQL(config.DBConnectionURI)
 	} else if strings.HasPrefix(config.DBConnectionURI, "mongodb://") {
-		hc.db = mongodb.NewDatabaseMongoDB(config.DBConnectionURI, config.DBName) // TODO parameter
+		hc.db = mongodb.NewDatabaseMongoDB(config.DBConnectionURI, config.DBName)
 	} else {
 		hc.db = fake.NewDatabaseFake()
 	}
