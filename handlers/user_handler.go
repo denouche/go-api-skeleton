@@ -30,7 +30,7 @@ import (
 //					application/json:
 //						schema:
 //							$ref: "#/components/schemas/APIError"
-func (hc *handlersContext) GetAllUsers(c *gin.Context) {
+func (hc *Context) GetAllUsers(c *gin.Context) {
 	users, err := hc.db.GetAllUsers()
 	if err != nil {
 		utils.GetLoggerFromCtx(c).WithError(err).Error("error while getting users")
@@ -78,7 +78,7 @@ func (hc *handlersContext) GetAllUsers(c *gin.Context) {
 //					application/json:
 //						schema:
 //							$ref: "#/components/schemas/APIError"
-func (hc *handlersContext) CreateUser(c *gin.Context) {
+func (hc *Context) CreateUser(c *gin.Context) {
 	b, err := c.GetRawData()
 	if err != nil {
 		utils.GetLoggerFromCtx(c).WithError(err).Error("error while creating user, read data fail")
@@ -153,7 +153,7 @@ func (hc *handlersContext) CreateUser(c *gin.Context) {
 //					application/json:
 //						schema:
 //							$ref: "#/components/schemas/APIError"
-func (hc *handlersContext) GetUser(c *gin.Context) {
+func (hc *Context) GetUser(c *gin.Context) {
 	userID := c.Param("id")
 
 	err := hc.validator.VarCtx(c, userID, "required")
@@ -213,7 +213,7 @@ func (hc *handlersContext) GetUser(c *gin.Context) {
 //					application/json:
 //						schema:
 //							$ref: "#/components/schemas/APIError"
-func (hc *handlersContext) DeleteUser(c *gin.Context) {
+func (hc *Context) DeleteUser(c *gin.Context) {
 	userID := c.Param("id")
 
 	err := hc.validator.VarCtx(c, userID, "required")
@@ -305,7 +305,7 @@ func (hc *handlersContext) DeleteUser(c *gin.Context) {
 //					application/json:
 //						schema:
 //							$ref: "#/components/schemas/APIError"
-func (hc *handlersContext) UpdateUser(c *gin.Context) {
+func (hc *Context) UpdateUser(c *gin.Context) {
 	userID := c.Param("id")
 
 	err := hc.validator.VarCtx(c, userID, "required")

@@ -7,6 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (hc *handlersContext) GetOpenAPISchema(c *gin.Context) {
+func (hc *Context) GetOpenAPISchema(c *gin.Context) {
 	utils.YAML(c.Writer, http.StatusOK, utils.OpenAPISchema)
 }

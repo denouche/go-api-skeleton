@@ -27,22 +27,13 @@ type Config struct {
 	LogFormat       string
 }
 
-type handlersContext struct {
+type Context struct {
 	db        dao.Database
 	validator *validator.Validate
 }
 
-func NewRouter(config *Config) *gin.Engine {
-	gin.SetMode(gin.ReleaseMode)
-
-	router := gin.New()
-	router.HandleMethodNotAllowed = true
-
-	router.Use(gin.Recovery())
-	router.Use(middlewares.GetLoggerMiddleware())
-	router.Use(middlewares.GetHTTPLoggerMiddleware())
-
-	hc := &handlersContext{}
+func NewHandlersContext(config *Config) *Context {
+	hc := &Context{}
 	if config.Mock {
 		hc.db = mock.NewDatabaseMock()
 	} else if config.DBInMemory {
@@ -55,6 +46,18 @@ func NewRouter(config *Config) *gin.Engine {
 		hc.db = fake.NewDatabaseFake()
 	}
 	hc.validator = newValidator()
+	return hc
+}
+
+func NewRouter(hc *Context) *gin.Engine {
+	gin.SetMode(gin.ReleaseMode)
+
+	router := gin.New()
+	router.HandleMethodNotAllowed = true
+
+	router.Use(gin.Recovery())
+	router.Use(middlewares.GetLoggerMiddleware())
+	router.Use(middlewares.GetHTTPLoggerMiddleware())
 
 	public := router.Group("/")
 	public.Use(middlewares.CORSMiddlewareForOthersHTTPMethods())

@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (hc *handlersContext) GetOptionsHandler(allowedHeaders []string, allowedMethods ...string) func(*gin.Context) {
+func (hc *Context) GetOptionsHandler(allowedHeaders []string, allowedMethods ...string) func(*gin.Context) {
 	return func(c *gin.Context) {
 		headerOrigin := c.Request.Header.Get(utils.HeaderNameOrigin)
 		if headerOrigin != "" {

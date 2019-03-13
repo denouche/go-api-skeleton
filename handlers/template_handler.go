@@ -30,7 +30,7 @@ import (
 //					application/json:
 //						schema:
 //							$ref: "#/components/schemas/APIError"
-func (hc *handlersContext) GetAllTemplates(c *gin.Context) {
+func (hc *Context) GetAllTemplates(c *gin.Context) {
 	templates, err := hc.db.GetAllTemplates()
 	if err != nil {
 		utils.GetLoggerFromCtx(c).WithError(err).Error("error while getting templates")
@@ -78,7 +78,7 @@ func (hc *handlersContext) GetAllTemplates(c *gin.Context) {
 //					application/json:
 //						schema:
 //							$ref: "#/components/schemas/APIError"
-func (hc *handlersContext) CreateTemplate(c *gin.Context) {
+func (hc *Context) CreateTemplate(c *gin.Context) {
 	b, err := c.GetRawData()
 	if err != nil {
 		utils.GetLoggerFromCtx(c).WithError(err).Error("error while creating template, read data fail")
@@ -153,7 +153,7 @@ func (hc *handlersContext) CreateTemplate(c *gin.Context) {
 //					application/json:
 //						schema:
 //							$ref: "#/components/schemas/APIError"
-func (hc *handlersContext) GetTemplate(c *gin.Context) {
+func (hc *Context) GetTemplate(c *gin.Context) {
 	templateID := c.Param("id")
 
 	err := hc.validator.VarCtx(c, templateID, "required")
@@ -213,7 +213,7 @@ func (hc *handlersContext) GetTemplate(c *gin.Context) {
 //					application/json:
 //						schema:
 //							$ref: "#/components/schemas/APIError"
-func (hc *handlersContext) DeleteTemplate(c *gin.Context) {
+func (hc *Context) DeleteTemplate(c *gin.Context) {
 	templateID := c.Param("id")
 
 	err := hc.validator.VarCtx(c, templateID, "required")
@@ -305,7 +305,7 @@ func (hc *handlersContext) DeleteTemplate(c *gin.Context) {
 //					application/json:
 //						schema:
 //							$ref: "#/components/schemas/APIError"
-func (hc *handlersContext) UpdateTemplate(c *gin.Context) {
+func (hc *Context) UpdateTemplate(c *gin.Context) {
 	templateID := c.Param("id")
 
 	err := hc.validator.VarCtx(c, templateID, "required")

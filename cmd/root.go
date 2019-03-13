@@ -50,7 +50,9 @@ var rootCmd = &cobra.Command{
 			WithField(parameterDBName, config.DBName).
 			Warn("Configuration")
 
-		router := handlers.NewRouter(config)
+		hc := handlers.NewHandlersContext(config)
+
+		router := handlers.NewRouter(hc)
 		err := router.Run(fmt.Sprintf(":%d", config.Port))
 		if err != nil {
 			utils.GetLogger().WithError(err).Error("error while starting app")
