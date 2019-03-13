@@ -37,6 +37,7 @@ var (
 	}
 )
 
+// @openapi:schema
 type APIError struct {
 	HTTPCode    int                 `json:"-"`
 	Type        string              `json:"error"`
@@ -45,6 +46,7 @@ type APIError struct {
 	Headers     map[string][]string `json:"-"`
 }
 
+// @openapi:schema
 type FieldError struct {
 	Field       string `json:"field"`
 	Constraint  string `json:"constraint"`

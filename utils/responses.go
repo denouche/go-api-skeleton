@@ -30,3 +30,9 @@ func JSONErrorWithMessage(w http.ResponseWriter, e model.APIError, message strin
 	e.Description = message
 	JSONError(w, e)
 }
+
+func YAML(w http.ResponseWriter, status int, data string) {
+	w.Header().Set(HeaderNameContentType, HeaderValueApplicationYAML)
+	w.WriteHeader(status)
+	w.Write([]byte(data))
+}

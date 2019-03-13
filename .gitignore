@@ -1,3 +1,5 @@
 vendor/
 .idea/
+openapi.yaml
+utils/openapi.go
 

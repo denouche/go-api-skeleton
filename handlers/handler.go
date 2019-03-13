@@ -12,6 +12,7 @@ import (
 	"github.com/denouche/go-api-skeleton/storage/dao/mongodb"
 	"github.com/denouche/go-api-skeleton/storage/dao/postgresql"
 	"github.com/denouche/go-api-skeleton/storage/validators"
+	"github.com/denouche/go-api-skeleton/utils"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -56,18 +57,27 @@ func NewRouter(config *Config) *gin.Engine {
 	hc.validator = newValidator()
 
 	public := router.Group("/")
+	public.Use(middlewares.CORSMiddlewareForOthersHTTPMethods())
+
 	public.Handle(http.MethodGet, "/_health", hc.GetHealth)
+	public.Handle(http.MethodOptions, "/_health", hc.GetOptionsHandler(utils.AllowedHeaders, http.MethodGet))
+	public.Handle(http.MethodGet, "/openapi", hc.GetOpenAPISchema)
+	public.Handle(http.MethodOptions, "/openapi", hc.GetOptionsHandler(utils.AllowedHeaders, http.MethodGet))
 
 	// start: user routes
+	public.Handle(http.MethodOptions, "/users", hc.GetOptionsHandler(utils.AllowedHeaders, http.MethodGet, http.MethodPost))
 	public.Handle(http.MethodGet, "/users", hc.GetAllUsers)
 	public.Handle(http.MethodPost, "/users", hc.CreateUser)
+	public.Handle(http.MethodOptions, "/users/:id", hc.GetOptionsHandler(utils.AllowedHeaders, http.MethodGet, http.MethodPut, http.MethodDelete))
 	public.Handle(http.MethodGet, "/users/:id", hc.GetUser)
 	public.Handle(http.MethodPut, "/users/:id", hc.UpdateUser)
 	public.Handle(http.MethodDelete, "/users/:id", hc.DeleteUser)
 	// end: user routes
 	// start: template routes
+	public.Handle(http.MethodOptions, "/templates", hc.GetOptionsHandler(utils.AllowedHeaders, http.MethodGet, http.MethodPost))
 	public.Handle(http.MethodGet, "/templates", hc.GetAllTemplates)
 	public.Handle(http.MethodPost, "/templates", hc.CreateTemplate)
+	public.Handle(http.MethodOptions, "/templates/:id", hc.GetOptionsHandler(utils.AllowedHeaders, http.MethodGet, http.MethodPut, http.MethodDelete))
 	public.Handle(http.MethodGet, "/templates/:id", hc.GetTemplate)
 	public.Handle(http.MethodPut, "/templates/:id", hc.UpdateTemplate)
 	public.Handle(http.MethodDelete, "/templates/:id", hc.DeleteTemplate)
