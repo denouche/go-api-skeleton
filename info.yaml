@@ -1,0 +1,4 @@
+# this file follow the info openapi 3 specification described here https://swagger.io/docs/specification/api-general-info/
+info:
+  title: go-api-skeleton
+  version: 0.0.0

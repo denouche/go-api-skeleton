@@ -14,12 +14,17 @@ NEW_PROJECT_FULL_NAME="${NEW_PROJECT_NAMESPACE}/${NEW_PROJECT_NAME}"
 
 find . -iname '*.go' -exec sed -i "s|${OLD_PROJECT_FULL_NAME}|${NEW_PROJECT_FULL_NAME}|g" {} \;
 sed -i "s|${OLD_PROJECT_FULL_NAME}|${NEW_PROJECT_FULL_NAME}|g" Makefile Dockerfile
-sed -i "s|${OLD_PROJECT_NAME}|${NEW_PROJECT_NAME}|g" Makefile Dockerfile
+sed -i "s|${OLD_PROJECT_NAME}|${NEW_PROJECT_NAME}|g" Makefile Dockerfile info.yaml
 
 main()
 {
+    echo
+    echo
+    echo "Now we will create entities and corresponding CRUD. Hit Ctrl+C to stop."
+    echo
     while true
     do
+        echo "Creating a new entity:"
         echo "What is the entity name you want to create? (name to be used in URL path, write it lower case, singular)"
         read ENTITY_NAME
         ENTITY_NAME_UP="${ENTITY_NAME^}"
@@ -57,6 +62,8 @@ main()
 
         echo "Done"
         echo "If you want to stop here, hit Ctrl+C"
+        echo
+        echo
     done
 }
 
