@@ -48,18 +48,16 @@ func (hc *Context) GetAllUsers(c *gin.Context) {
 //			description: The user data.
 //			required: true
 //			content:
-//				application/vnd.api+json:
+//				application/json:
 //					schema:
 //						$ref: "#/components/schemas/UserEditable"
 //		responses:
 //			201:
-//				description: "The array containing the users"
+//				description: "The created user"
 //				content:
 //					application/json:
 //						schema:
-//							type: "array"
-//							items:
-//								$ref: "#/components/schemas/User"
+//							$ref: "#/components/schemas/User"
 //			400:
 //				description: "This error occurs when the request is not correct (bad body format, validation error)"
 //				content:
@@ -275,18 +273,16 @@ func (hc *Context) DeleteUser(c *gin.Context) {
 //			description: The user data.
 //			required: true
 //			content:
-//				application/vnd.api+json:
+//				application/json:
 //					schema:
 //						$ref: "#/components/schemas/UserEditable"
 //		responses:
 //			201:
-//				description: "The array containing the users"
+//				description: "The updated user"
 //				content:
 //					application/json:
 //						schema:
-//							type: "array"
-//							items:
-//								$ref: "#/components/schemas/User"
+//							$ref: "#/components/schemas/User"
 //			400:
 //				description: "This error occurs when the request is not correct (bad body format, validation error)"
 //				content:

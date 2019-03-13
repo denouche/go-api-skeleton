@@ -48,18 +48,16 @@ func (hc *Context) GetAllTemplates(c *gin.Context) {
 //			description: The template data.
 //			required: true
 //			content:
-//				application/vnd.api+json:
+//				application/json:
 //					schema:
 //						$ref: "#/components/schemas/TemplateEditable"
 //		responses:
 //			201:
-//				description: "The array containing the templates"
+//				description: "The created template"
 //				content:
 //					application/json:
 //						schema:
-//							type: "array"
-//							items:
-//								$ref: "#/components/schemas/Template"
+//							$ref: "#/components/schemas/Template"
 //			400:
 //				description: "This error occurs when the request is not correct (bad body format, validation error)"
 //				content:
@@ -275,18 +273,16 @@ func (hc *Context) DeleteTemplate(c *gin.Context) {
 //			description: The template data.
 //			required: true
 //			content:
-//				application/vnd.api+json:
+//				application/json:
 //					schema:
 //						$ref: "#/components/schemas/TemplateEditable"
 //		responses:
 //			201:
-//				description: "The array containing the templates"
+//				description: "The updated template"
 //				content:
 //					application/json:
 //						schema:
-//							type: "array"
-//							items:
-//								$ref: "#/components/schemas/Template"
+//							$ref: "#/components/schemas/Template"
 //			400:
 //				description: "This error occurs when the request is not correct (bad body format, validation error)"
 //				content:
