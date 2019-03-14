@@ -14,6 +14,8 @@ import (
 // @openapi:path
 // /users:
 //	get:
+//		tags:
+//			- users
 //		description: "Get all the users"
 //		responses:
 //			200:
@@ -43,6 +45,8 @@ func (hc *Context) GetAllUsers(c *gin.Context) {
 // @openapi:path
 // /users:
 //	post:
+//		tags:
+//			- users
 //		description: "Create a new user"
 //		requestBody:
 //			description: The user data.
@@ -124,6 +128,8 @@ func (hc *Context) CreateUser(c *gin.Context) {
 // @openapi:path
 // /users/{userID}:
 //	get:
+//		tags:
+//			- users
 //		description: "Get a user"
 //		parameters:
 //		- in: path
@@ -188,6 +194,8 @@ func (hc *Context) GetUser(c *gin.Context) {
 // @openapi:path
 // /users/{userID}:
 //	delete:
+//		tags:
+//			- users
 //		description: "Delete a user"
 //		parameters:
 //		- in: path
@@ -261,6 +269,8 @@ func (hc *Context) DeleteUser(c *gin.Context) {
 // @openapi:path
 // /users/{userID}:
 //	put:
+//		tags:
+//			- users
 //		description: "Update a user"
 //		parameters:
 //		- in: path

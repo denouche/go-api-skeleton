@@ -14,6 +14,8 @@ import (
 // @openapi:path
 // /templates:
 //	get:
+//		tags:
+//			- templates
 //		description: "Get all the templates"
 //		responses:
 //			200:
@@ -43,6 +45,8 @@ func (hc *Context) GetAllTemplates(c *gin.Context) {
 // @openapi:path
 // /templates:
 //	post:
+//		tags:
+//			- templates
 //		description: "Create a new template"
 //		requestBody:
 //			description: The template data.
@@ -124,6 +128,8 @@ func (hc *Context) CreateTemplate(c *gin.Context) {
 // @openapi:path
 // /templates/{templateID}:
 //	get:
+//		tags:
+//			- templates
 //		description: "Get a template"
 //		parameters:
 //		- in: path
@@ -188,6 +194,8 @@ func (hc *Context) GetTemplate(c *gin.Context) {
 // @openapi:path
 // /templates/{templateID}:
 //	delete:
+//		tags:
+//			- templates
 //		description: "Delete a template"
 //		parameters:
 //		- in: path
@@ -261,6 +269,8 @@ func (hc *Context) DeleteTemplate(c *gin.Context) {
 // @openapi:path
 // /templates/{templateID}:
 //	put:
+//		tags:
+//			- templates
 //		description: "Update a template"
 //		parameters:
 //		- in: path
