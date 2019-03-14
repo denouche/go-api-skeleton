@@ -13,8 +13,8 @@ read NEW_PROJECT_NAME
 NEW_PROJECT_FULL_NAME="${NEW_PROJECT_NAMESPACE}/${NEW_PROJECT_NAME}"
 
 find . -iname '*.go' -exec sed -i "s|${OLD_PROJECT_FULL_NAME}|${NEW_PROJECT_FULL_NAME}|g" {} \;
-sed -i "s|${OLD_PROJECT_FULL_NAME}|${NEW_PROJECT_FULL_NAME}|g" Makefile Dockerfile
-sed -i "s|${OLD_PROJECT_NAME}|${NEW_PROJECT_NAME}|g" Makefile Dockerfile info.yaml
+sed -i "s|${OLD_PROJECT_FULL_NAME}|${NEW_PROJECT_FULL_NAME}|g" Makefile Dockerfile go.mod
+sed -i "s|${OLD_PROJECT_NAME}|${NEW_PROJECT_NAME}|g" Makefile Dockerfile info.yaml cmd/root.go
 
 main()
 {
