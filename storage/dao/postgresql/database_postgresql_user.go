@@ -31,7 +31,7 @@ func (db *DatabasePostgreSQL) GetAllUsers() ([]*model.User, error) {
 	return us, nil
 }
 
-func (db *DatabasePostgreSQL) GetUsersByID(id string) (*model.User, error) {
+func (db *DatabasePostgreSQL) GetUserByID(id string) (*model.User, error) {
 	q := `
 		SELECT u.id, u.email, u.first_name, u.last_name, u.created_at, u.updated_at
 		FROM users.user u

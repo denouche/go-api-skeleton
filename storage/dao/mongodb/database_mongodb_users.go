@@ -35,7 +35,7 @@ func (db *DatabaseMongoDB) GetAllUsers() ([]*model.User, error) {
 	return results, nil
 }
 
-func (db *DatabaseMongoDB) GetUsersByID(id string) (*model.User, error) {
+func (db *DatabaseMongoDB) GetUserByID(id string) (*model.User, error) {
 	ctx := db.getCtx()
 	var result *model.User
 	err := db.getSession().Collection("user").FindOne(ctx, bson.M{"_id": id}).Decode(&result)

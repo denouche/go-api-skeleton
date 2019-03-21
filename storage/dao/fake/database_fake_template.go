@@ -41,7 +41,7 @@ func (db *DatabaseFake) GetAllTemplates() ([]*model.Template, error) {
 	return db.loadTemplates(), nil
 }
 
-func (db *DatabaseFake) GetTemplatesByID(templateID string) (*model.Template, error) {
+func (db *DatabaseFake) GetTemplateByID(templateID string) (*model.Template, error) {
 	templates := db.loadTemplates()
 	for _, u := range templates {
 		if u.ID == templateID {

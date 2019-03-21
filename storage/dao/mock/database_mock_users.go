@@ -9,7 +9,7 @@ func (db *DatabaseMock) GetAllUsers() ([]*model.User, error) {
 	return args.Get(0).([]*model.User), args.Error(1)
 }
 
-func (db *DatabaseMock) GetUsersByID(id string) (*model.User, error) {
+func (db *DatabaseMock) GetUserByID(id string) (*model.User, error) {
 	args := db.Called()
 	return args.Get(0).(*model.User), args.Error(1)
 }

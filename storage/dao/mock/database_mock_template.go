@@ -9,7 +9,7 @@ func (db *DatabaseMock) GetAllTemplates() ([]*model.Template, error) {
 	return args.Get(0).([]*model.Template), args.Error(1)
 }
 
-func (db *DatabaseMock) GetTemplatesByID(id string) (*model.Template, error) {
+func (db *DatabaseMock) GetTemplateByID(id string) (*model.Template, error) {
 	args := db.Called()
 	return args.Get(0).(*model.Template), args.Error(1)
 }

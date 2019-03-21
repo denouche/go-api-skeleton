@@ -41,7 +41,7 @@ func (db *DatabaseFake) GetAllUsers() ([]*model.User, error) {
 	return db.loadUsers(), nil
 }
 
-func (db *DatabaseFake) GetUsersByID(userID string) (*model.User, error) {
+func (db *DatabaseFake) GetUserByID(userID string) (*model.User, error) {
 	users := db.loadUsers()
 	for _, u := range users {
 		if u.ID == userID {

@@ -31,7 +31,7 @@ func (db *DatabasePostgreSQL) GetAllTemplates() ([]*model.Template, error) {
 	return us, nil
 }
 
-func (db *DatabasePostgreSQL) GetTemplatesByID(id string) (*model.Template, error) {
+func (db *DatabasePostgreSQL) GetTemplateByID(id string) (*model.Template, error) {
 	q := `
 		SELECT u.id, u.code, u.created_at, u.updated_at
 		FROM schema.template u

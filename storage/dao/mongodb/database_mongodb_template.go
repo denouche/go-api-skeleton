@@ -35,7 +35,7 @@ func (db *DatabaseMongoDB) GetAllTemplates() ([]*model.Template, error) {
 	return results, nil
 }
 
-func (db *DatabaseMongoDB) GetTemplatesByID(id string) (*model.Template, error) {
+func (db *DatabaseMongoDB) GetTemplateByID(id string) (*model.Template, error) {
 	ctx := db.getCtx()
 	var result *model.Template
 	err := db.getSession().Collection("template").FindOne(ctx, bson.M{"_id": id}).Decode(&result)

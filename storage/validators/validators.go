@@ -4,10 +4,13 @@ import (
 	"context"
 	"strings"
 
+	"github.com/denouche/go-api-skeleton/storage/dao"
 	"gopkg.in/go-playground/validator.v9"
 )
 
 var (
+	ContextKeyValidator = "ContextKeyValidator"
+
 	CustomValidators = map[string]customValidator{
 		"enum": {
 			Message:   "This field should be in: %v",
@@ -16,8 +19,16 @@ var (
 		"required": {
 			Message: "This field is required and cannot be empty",
 		},
+		//"something-exists": {
+		//	Message:   "This field should exists",
+		//	Validator: validateSomethingExists,
+		//},
 	}
 )
+
+type ValidationContext struct {
+	DB dao.Database
+}
 
 type customValidator struct {
 	Message   string
@@ -32,3 +43,17 @@ func validateEnum(ctx context.Context, fl validator.FieldLevel) bool {
 	}
 	return false
 }
+
+//func validateSomethingExists(ctx context.Context, fl validator.FieldLevel) bool {
+//	vc := ctx.Value(ContextKeyValidator)
+//	if vc == nil {
+//		return false
+//	}
+//
+//	validationContext, ok := vc.(*ValidationContext)
+//	if !ok {
+//		return false
+//	}
+//
+//	// here in the validationContext you have the DB for any db required validation
+//}

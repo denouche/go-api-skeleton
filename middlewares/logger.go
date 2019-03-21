@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/denouche/go-api-skeleton/utils"
+	"github.com/denouche/go-api-skeleton/utils/httputils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,14 +38,14 @@ func randStringBytesMaskImprSrc(n int) string {
 
 func GetLoggerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		correlationID := c.Request.Header.Get(utils.HeaderNameCorrelationID)
+		correlationID := c.Request.Header.Get(httputils.HeaderNameCorrelationID)
 		if correlationID == "" {
 			correlationID = randStringBytesMaskImprSrc(30)
-			c.Writer.Header().Set(utils.HeaderNameCorrelationID, correlationID)
+			c.Writer.Header().Set(httputils.HeaderNameCorrelationID, correlationID)
 		}
 
 		logger := utils.GetLogger()
-		logEntry := logger.WithField(utils.HeaderNameCorrelationID, correlationID)
+		logEntry := logger.WithField(httputils.HeaderNameCorrelationID, correlationID)
 
 		c.Set(utils.ContextKeyLogger, logEntry)
 	}
