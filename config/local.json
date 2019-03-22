@@ -1,6 +1,6 @@
 {
-  "loglevel":"debug",
-  "logformat": "text",
+  "log-level":"debug",
+  "log-format": "text",
   "port": "8080",
-  "dbconnectionuri": "postgresql://postgres:pwd@localhost/databasename?sslmode=disable"
+  "db-connection-uri": "postgresql://postgres:pwd@localhost/databasename?sslmode=disable"
 }

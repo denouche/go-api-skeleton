@@ -1,10 +1,14 @@
 NAME := $(shell cat info.yaml | sed -r '/title:/!d;s/.*: *'"'"'?([^$$])'"'"'?/\1/')
 VERSION := $(shell cat info.yaml | sed -r '/version:/!d;s/.*: *'"'"'?([^$$])'"'"'?/\1/')
+GITHASH := $(shell git rev-parse --short HEAD)
+BUILDDATE := $(shell date -Iseconds)
 
 .PHONY: help
 help: ## display this help
 	@echo "Name: $(NAME)"
 	@echo "Version: $(VERSION)"
+	@echo "Git hash: $(GITHASH)"
+	@echo "Build date: $(BUILDDATE)"
 	@echo
 	@echo "This is the list of available make targets:"
 	@echo " $(shell cat Makefile | sed -r '/^[a-zA-Z-]+:.*##.*/!d;s/## *//;s/$$/\\n/')"
@@ -13,13 +17,17 @@ help: ## display this help
 start: openapi ## start the application
 	go run main.go --config config/local.json
 
+.PHONY: start-offline
+start-offline: ## start the application in offline mode
+	go run main.go --log-level debug --log-format text --db-in-memory
+
 .PHONY: deps
 deps: ## get the golang dependencies in the vendor folder
 	GO111MODULE=on go mod vendor
 
 .PHONY: build
 build: ##  build the executable and set the version
-	go build -o go-api-skeleton -ldflags "-X github.com/denouche/go-api-skeleton/handlers.ApplicationVersion=$(VERSION) -X github.com/denouche/go-api-skeleton/handlers.ApplicationName=$(NAME)" main.go
+	go build -o go-api-skeleton -ldflags "-X github.com/denouche/go-api-skeleton/handlers.ApplicationVersion=$(VERSION) -X github.com/denouche/go-api-skeleton/handlers.ApplicationName=$(NAME) -X github.com/denouche/go-api-skeleton/handlers.ApplicationGitHash=$(GITHASH) -X github.com/denouche/go-api-skeleton/handlers.ApplicationBuildDate=$(BUILDDATE)" main.go
 
 .PHONY: test
 test: ## run go test

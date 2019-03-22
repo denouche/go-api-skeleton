@@ -5,7 +5,6 @@ import (
 
 	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/denouche/go-api-skeleton/storage/model"
-	"github.com/denouche/go-api-skeleton/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,7 +14,7 @@ func (db *DatabaseMongoDB) GetAllUsers() ([]*model.User, error) {
 	ctx := db.getCtx()
 	cur, err := db.getSession().Collection("user").Find(ctx, bson.D{})
 	if err != nil {
-		utils.GetLogger().WithError(err).Fatal("Unable to get all templates")
+		return nil, err
 	}
 	defer cur.Close(ctx)
 

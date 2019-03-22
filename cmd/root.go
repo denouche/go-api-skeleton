@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/denouche/go-api-skeleton/handlers"
 	"github.com/denouche/go-api-skeleton/utils"
@@ -18,11 +19,11 @@ var (
 
 const (
 	parameterConfigurationFile = "config"
-	parameterLogLevel          = "loglevel"
-	parameterLogFormat         = "logformat"
-	parameterDBConnectionURI   = "dbconnectionuri"
-	parameterDBInMemory        = "dbinmemory"
-	parameterDBName            = "dbname"
+	parameterLogLevel          = "log-level"
+	parameterLogFormat         = "log-format"
+	parameterDBConnectionURI   = "db-connection-uri"
+	parameterDBInMemory        = "db-in-memory"
+	parameterDBName            = "db-name"
 	parameterPort              = "port"
 )
 
@@ -99,6 +100,9 @@ func initConfig() {
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
+
+	dashReplacer := strings.NewReplacer("-", "_")
+	viper.SetEnvKeyReplacer(dashReplacer)
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {

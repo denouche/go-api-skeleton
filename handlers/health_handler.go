@@ -8,5 +8,11 @@ import (
 )
 
 func (hc *Context) GetHealth(c *gin.Context) {
-	httputils.JSON(c.Writer, http.StatusNoContent, nil)
+	conf := map[string]string{
+		"ApplicationName":      ApplicationName,
+		"ApplicationVersion":   ApplicationVersion,
+		"ApplicationGitHash":   ApplicationGitHash,
+		"ApplicationBuildDate": ApplicationBuildDate,
+	}
+	httputils.JSON(c.Writer, http.StatusOK, conf)
 }

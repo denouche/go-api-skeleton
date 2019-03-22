@@ -19,6 +19,13 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
+var (
+	ApplicationName      = ""
+	ApplicationVersion   = "dev"
+	ApplicationGitHash   = ""
+	ApplicationBuildDate = ""
+)
+
 type Config struct {
 	Mock            bool
 	DBInMemory      bool
