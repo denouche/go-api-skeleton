@@ -60,6 +60,8 @@ main()
 
         sed -i -r "/\/\/ start: template dao funcs/{:next;N;/\/\/ end: template dao funcs/{bend};bnext;:end;p;s|template|${ENTITY_NAME}|g;s|Template|${ENTITY_NAME_UP}|g}" storage/dao/database.go
 
+        sed -i -r "/\/\/ template export/{p;s/Template/${ENTITY_NAME}/g}" storage/dao/fake/database_fake.go
+
         echo "Done"
         echo "If you want to stop here, hit Ctrl+C"
         echo

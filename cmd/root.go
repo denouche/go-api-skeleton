@@ -18,21 +18,23 @@ var (
 )
 
 const (
-	parameterConfigurationFile = "config"
-	parameterLogLevel          = "log-level"
-	parameterLogFormat         = "log-format"
-	parameterDBConnectionURI   = "db-connection-uri"
-	parameterDBInMemory        = "db-in-memory"
-	parameterDBName            = "db-name"
-	parameterPort              = "port"
+	parameterConfigurationFile    = "config"
+	parameterLogLevel             = "log-level"
+	parameterLogFormat            = "log-format"
+	parameterDBConnectionURI      = "db-connection-uri"
+	parameterDBInMemory           = "db-in-memory"
+	parameterDBInMemoryImportFile = "db-in-memory-import-file"
+	parameterDBName               = "db-name"
+	parameterPort                 = "port"
 )
 
 var (
-	defaultLogLevel        = logrus.WarnLevel.String()
-	defaultLogFormat       = utils.LogFormatText
-	defaultDBConnectionURI = ""
-	defaultDBName          = ""
-	defaultPort            = 8080
+	defaultLogLevel             = logrus.WarnLevel.String()
+	defaultLogFormat            = utils.LogFormatText
+	defaultDBInMemoryImportFile = ""
+	defaultDBConnectionURI      = ""
+	defaultDBName               = ""
+	defaultPort                 = 8080
 )
 
 var rootCmd = &cobra.Command{
@@ -48,6 +50,7 @@ var rootCmd = &cobra.Command{
 			WithField(parameterPort, config.Port).
 			WithField(parameterDBInMemory, config.Mock).
 			WithField(parameterDBConnectionURI, config.DBConnectionURI).
+			WithField(parameterDBInMemoryImportFile, config.DBInMemoryImportFile).
 			WithField(parameterDBName, config.DBName).
 			Warn("Configuration")
 
@@ -90,6 +93,9 @@ func init() {
 
 	rootCmd.Flags().Bool(parameterDBInMemory, false, "Use this flag to enable the db in memory mode")
 	_ = viper.BindPFlag(parameterDBInMemory, rootCmd.Flags().Lookup(parameterDBInMemory))
+
+	rootCmd.Flags().String(parameterDBInMemoryImportFile, defaultDBInMemoryImportFile, "Use this flag to import a dataset in db in memory mode")
+	_ = viper.BindPFlag(parameterDBInMemoryImportFile, rootCmd.Flags().Lookup(parameterDBInMemoryImportFile))
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -115,4 +121,5 @@ func initConfig() {
 	config.DBConnectionURI = viper.GetString(parameterDBConnectionURI)
 	config.DBName = viper.GetString(parameterDBName)
 	config.DBInMemory = viper.GetBool(parameterDBInMemory)
+	config.DBInMemoryImportFile = viper.GetString(parameterDBInMemoryImportFile)
 }

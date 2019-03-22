@@ -8,8 +8,8 @@ import (
 
 	"github.com/denouche/go-api-skeleton/middlewares"
 	"github.com/denouche/go-api-skeleton/storage/dao"
-	"github.com/denouche/go-api-skeleton/storage/dao/fake"
-	"github.com/denouche/go-api-skeleton/storage/dao/mock"
+	dbFake "github.com/denouche/go-api-skeleton/storage/dao/fake"
+	dbMock "github.com/denouche/go-api-skeleton/storage/dao/mock"
 	"github.com/denouche/go-api-skeleton/storage/dao/mongodb"
 	"github.com/denouche/go-api-skeleton/storage/dao/postgresql"
 	"github.com/denouche/go-api-skeleton/storage/validators"
@@ -27,13 +27,14 @@ var (
 )
 
 type Config struct {
-	Mock            bool
-	DBInMemory      bool
-	DBConnectionURI string
-	DBName          string
-	Port            int
-	LogLevel        string
-	LogFormat       string
+	Mock                 bool
+	DBInMemory           bool
+	DBInMemoryImportFile string
+	DBConnectionURI      string
+	DBName               string
+	Port                 int
+	LogLevel             string
+	LogFormat            string
 }
 
 type Context struct {
@@ -44,16 +45,16 @@ type Context struct {
 func NewHandlersContext(config *Config) *Context {
 	hc := &Context{}
 	if config.Mock {
-		hc.db = mock.NewDatabaseMock()
+		hc.db = dbMock.NewDatabaseMock()
 	} else if config.DBInMemory {
-		hc.db = fake.NewDatabaseFake()
+		hc.db = dbFake.NewDatabaseFake(config.DBInMemoryImportFile)
 	} else if strings.HasPrefix(config.DBConnectionURI, "postgresql://") {
 		hc.db = postgresql.NewDatabasePostgreSQL(config.DBConnectionURI)
 	} else if strings.HasPrefix(config.DBConnectionURI, "mongodb://") {
 		hc.db = mongodb.NewDatabaseMongoDB(config.DBConnectionURI, config.DBName)
 	} else {
 		utils.GetLogger().Warn("no db connection uri given or not handled, starting in mode db in memory")
-		hc.db = fake.NewDatabaseFake()
+		hc.db = dbFake.NewDatabaseFake(config.DBInMemoryImportFile)
 	}
 	hc.validator = newValidator()
 	return hc
@@ -76,6 +77,13 @@ func NewRouter(hc *Context) *gin.Engine {
 	public.Handle(http.MethodOptions, "/_health", hc.GetOptionsHandler(httputils.AllowedHeaders, http.MethodGet))
 	public.Handle(http.MethodGet, "/openapi", hc.GetOpenAPISchema)
 	public.Handle(http.MethodOptions, "/openapi", hc.GetOptionsHandler(httputils.AllowedHeaders, http.MethodGet))
+
+	if dbInMemory, ok := hc.db.(*dbFake.DatabaseFake); ok {
+		// db in memory mode, add export endpoint
+		public.Handle(http.MethodGet, "/export", func(c *gin.Context) {
+			httputils.JSON(c.Writer, http.StatusOK, dbInMemory.Export())
+		})
+	}
 
 	// start: user routes
 	public.Handle(http.MethodOptions, "/users", hc.GetOptionsHandler(httputils.AllowedHeaders, http.MethodGet, http.MethodPost))
