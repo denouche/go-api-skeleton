@@ -48,7 +48,7 @@ var rootCmd = &cobra.Command{
 			WithField(parameterLogLevel, config.LogLevel).
 			WithField(parameterLogFormat, config.LogFormat).
 			WithField(parameterPort, config.Port).
-			WithField(parameterDBInMemory, config.Mock).
+			WithField(parameterDBInMemory, config.DBInMemory).
 			WithField(parameterDBConnectionURI, config.DBConnectionURI).
 			WithField(parameterDBInMemoryImportFile, config.DBInMemoryImportFile).
 			WithField(parameterDBName, config.DBName).
