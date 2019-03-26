@@ -288,7 +288,7 @@ func (hc *Context) DeleteUser(c *gin.Context) {
 //					schema:
 //						$ref: "#/components/schemas/UserEditable"
 //		responses:
-//			201:
+//			200:
 //				description: "The updated user"
 //				content:
 //					application/json:

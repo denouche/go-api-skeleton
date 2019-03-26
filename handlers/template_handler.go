@@ -288,7 +288,7 @@ func (hc *Context) DeleteTemplate(c *gin.Context) {
 //					schema:
 //						$ref: "#/components/schemas/TemplateEditable"
 //		responses:
-//			201:
+//			200:
 //				description: "The updated template"
 //				content:
 //					application/json:
