@@ -29,10 +29,14 @@ func NewDatabaseMongoDB(connectionURI, dbName string) dao.Database {
 		utils.GetLogger().WithError(err).Fatal("Unable to ping mongodb")
 	}
 
-	return &DatabaseMongoDB{
+	result := &DatabaseMongoDB{
 		client:       client,
 		databaseName: dbName,
 	}
+
+	result.populateUserIndexes()
+
+	return result
 }
 
 func (db *DatabaseMongoDB) getSession() *mongo.Database {

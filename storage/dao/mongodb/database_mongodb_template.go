@@ -10,9 +10,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+const (
+	collectionTemplateName = "template"
+)
+
 func (db *DatabaseMongoDB) GetAllTemplates() ([]*model.Template, error) {
 	ctx := db.getCtx()
-	cur, err := db.getSession().Collection("template").Find(ctx, bson.D{})
+	cur, err := db.getSession().Collection(collectionTemplateName).Find(ctx, bson.D{})
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +41,7 @@ func (db *DatabaseMongoDB) GetAllTemplates() ([]*model.Template, error) {
 func (db *DatabaseMongoDB) GetTemplateByID(id string) (*model.Template, error) {
 	ctx := db.getCtx()
 	var result *model.Template
-	err := db.getSession().Collection("template").FindOne(ctx, bson.M{"_id": id}).Decode(&result)
+	err := db.getSession().Collection(collectionTemplateName).FindOne(ctx, bson.M{"_id": id}).Decode(&result)
 	if err == mongo.ErrNoDocuments {
 		return nil, dao.NewDAOError(dao.ErrTypeNotFound, err)
 	}
@@ -53,13 +57,13 @@ func (db *DatabaseMongoDB) CreateTemplate(template *model.Template) error {
 	template.CreatedAt = time.Now()
 
 	ctx := db.getCtx()
-	_, err := db.getSession().Collection("template").InsertOne(ctx, template)
+	_, err := db.getSession().Collection(collectionTemplateName).InsertOne(ctx, template)
 	return err
 }
 
 func (db *DatabaseMongoDB) DeleteTemplate(id string) error {
 	ctx := db.getCtx()
-	_, err := db.getSession().Collection("template").DeleteOne(ctx, bson.M{"_id": id})
+	_, err := db.getSession().Collection(collectionTemplateName).DeleteOne(ctx, bson.M{"_id": id})
 	if err == mongo.ErrNoDocuments {
 		return dao.NewDAOError(dao.ErrTypeNotFound, err)
 	}
@@ -71,7 +75,7 @@ func (db *DatabaseMongoDB) UpdateTemplate(template *model.Template) error {
 	template.UpdatedAt = &now
 
 	ctx := db.getCtx()
-	r, err := db.getSession().Collection("template").ReplaceOne(ctx, bson.M{"_id": template.ID}, template)
+	r, err := db.getSession().Collection(collectionTemplateName).ReplaceOne(ctx, bson.M{"_id": template.ID}, template)
 	if r.MatchedCount == 0 {
 		return dao.NewDAOError(dao.ErrTypeNotFound, err)
 	}
