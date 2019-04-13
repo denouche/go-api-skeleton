@@ -26,7 +26,7 @@ $GOPATH/
 
 First, clean and initialize the git:
 
-```
+```bash
 $ rm -rf .git
 $ git init
 ```
@@ -40,5 +40,11 @@ Then it will ask you for the entities to create, and it will create you the DAO 
 After creating the basic CRUD and DAO, you can:
 - add your entities fields in the corresponding `./storage/model/*` file
 - if you use postgres DAOs, you have to modify the SQL requests to take your new entities fields in account
+
+After that you can execute the following commands to initialize dependencies and openapi schema:
+```bash
+$ make deps
+$ make openapi
+```
 
 After that you can delete the `duplicate.sh` file and template files.

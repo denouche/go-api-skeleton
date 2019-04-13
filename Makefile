@@ -1,13 +1,12 @@
-# Multi-OS compliant flags
 IS_LINUX=$(shell sed --version > /dev/null 2> /dev/null && echo $$?)
 ifeq ($(IS_LINUX),0)
-    SED_CMD="sed"
+	SED_IN_PLACE=-i
 else
-    SED_CMD="gsed"
+	SED_IN_PLACE=-i ""
 endif
 
-NAME := $(shell cat info.yaml | $(SED_CMD) -r '/title:/!d;s/.*: *'"'"'?([^$$])'"'"'?/\1/')
-VERSION := $(shell cat info.yaml | $(SED_CMD) -r '/version:/!d;s/.*: *'"'"'?([^$$])'"'"'?/\1/')
+NAME := $(shell cat info.yaml | $(SED_CMD) -E '/title:/!d;s/.*: *'"'"'?([^$$])'"'"'?/\1/')
+VERSION := $(shell cat info.yaml | $(SED_CMD) -E '/version:/!d;s/.*: *'"'"'?([^$$])'"'"'?/\1/')
 GITHASH := $(shell git rev-parse --short HEAD)
 BUILDDATE := $(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
 
@@ -19,7 +18,7 @@ help: ## display this help
 	@echo "Build date: $(BUILDDATE)"
 	@echo
 	@echo "This is the list of available make targets:"
-	@echo " $(shell cat Makefile | $(SED_CMD) -r '/^[a-zA-Z-]+:.*##.*/!d;s/## *//;s/$$/\\n/')"
+	@echo " $(shell cat Makefile | $(SED_CMD) -E '/^[a-zA-Z-]+:.*##.*/!d;s/## *//;s/$$/\\n/')"
 
 .PHONY: start
 start: openapi ## start the application
@@ -43,8 +42,8 @@ test: ## run go test
 
 .PHONY: bump
 bump: ## bump the version in the info.yaml file
-	NEW_VERSION=`standard-version --dry-run | $(SED_CMD) -r '/tagging release/!d;s/.*tagging release *v?(.*)/\1/g'`; \
-		$(SED_CMD) -r -i 's/^(.*version: *).*$$/\1'$$NEW_VERSION'/' info.yaml
+	NEW_VERSION=`standard-version --dry-run | $(SED_CMD) -E '/tagging release/!d;s/.*tagging release *v?(.*)/\1/g'`; \
+		$(SED_CMD) -E $(SED_IN_PLACE) 's/^(.*version: *).*$$/\1'$$NEW_VERSION'/' info.yaml
 
 .PHONY: release
 release: bump ## bump the version in the info.yaml, and make a release (commit, tag and push)
