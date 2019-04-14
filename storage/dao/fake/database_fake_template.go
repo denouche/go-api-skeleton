@@ -26,7 +26,7 @@ func (db *DatabaseFake) saveTemplates(templates []*model.Template) {
 
 func (db *DatabaseFake) loadTemplates() []*model.Template {
 	templates := make([]*model.Template, 0)
-	b, err := db.Cache.Get(cacheKeyTemplates)
+	b, err := db.Cache.Get([]byte(cacheKeyTemplates))
 	if err != nil {
 		return templates
 	}

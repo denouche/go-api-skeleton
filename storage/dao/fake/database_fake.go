@@ -3,26 +3,24 @@ package fake
 import (
 	"encoding/json"
 	"io/ioutil"
-	"time"
 
-	"github.com/allegro/bigcache"
+	"github.com/coocood/freecache"
 	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/denouche/go-api-skeleton/storage/model"
 	"github.com/denouche/go-api-skeleton/utils"
 )
 
+const (
+	cacheMaxMemory = 32 * 1024 * 1024 // bytes
+)
+
 type DatabaseFake struct {
-	Cache *bigcache.BigCache
+	Cache *freecache.Cache
 }
 
 func NewDatabaseFake(file string) dao.Database {
-	cache, err := bigcache.NewBigCache(bigcache.DefaultConfig(time.Minute))
-	if err != nil {
-		utils.GetLogger().WithError(err).Fatal("Error while instantiate cache")
-	}
-
 	result := &DatabaseFake{
-		Cache: cache,
+		Cache: freecache.NewCache(cacheMaxMemory),
 	}
 
 	if file != "" {
@@ -38,7 +36,6 @@ func NewDatabaseFake(file string) dao.Database {
 		}
 
 		result.saveTemplates(export.Templates) // Template export
-		result.saveUsers(export.Users)
 	}
 
 	return result
@@ -48,10 +45,10 @@ func (db *DatabaseFake) save(key string, data []interface{}) {
 	b, err := json.Marshal(data)
 	if err != nil {
 		utils.GetLogger().WithError(err).Errorf("Error while marshal fake %s", key)
-		db.Cache.Set(key, []byte("[]"))
+		_ = db.Cache.Set([]byte(key), []byte("[]"), 0)
 		return
 	}
-	err = db.Cache.Set(key, b)
+	err = db.Cache.Set([]byte(key), b, 0)
 	if err != nil {
 		utils.GetLogger().WithError(err).Errorf("Error while saving fake %s", key)
 	}
@@ -59,12 +56,10 @@ func (db *DatabaseFake) save(key string, data []interface{}) {
 
 type Export struct {
 	Templates []*model.Template // Template export
-	Users     []*model.User
 }
 
 func (db *DatabaseFake) Export() *Export {
 	return &Export{
 		Templates: db.loadTemplates(), // Template export
-		Users:     db.loadUsers(),
 	}
 }

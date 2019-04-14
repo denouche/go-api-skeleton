@@ -12,6 +12,6 @@ type Template struct {
 
 // @openapi:schema
 type TemplateEditable struct {
-	// Add here your model properties, and don't forget to modify SQL request in corresponding DAO file
-	Code string `json:"code" bson:"code" validate:"required"`
+	// Add here your model properties, and don't forget to modify SQL request in corresponding DAO file if any
+	Name string `json:"name" bson:"name" validate:"required"`
 }

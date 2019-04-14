@@ -34,7 +34,7 @@ func NewDatabaseMongoDB(connectionURI, dbName string) dao.Database {
 		databaseName: dbName,
 	}
 
-	result.populateUserIndexes()
+	result.populateTemplateIndexes() // Template index
 
 	return result
 }

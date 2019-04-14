@@ -3,6 +3,10 @@ package mongodb
 import (
 	"time"
 
+	"github.com/denouche/go-api-skeleton/utils"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/x/bsonx"
+
 	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/denouche/go-api-skeleton/storage/model"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,6 +17,19 @@ import (
 const (
 	collectionTemplateName = "template"
 )
+
+func (db *DatabaseMongoDB) populateTemplateIndexes() {
+	ctx := db.getCtx()
+	_, err := db.getSession().Collection(collectionTemplateName).Indexes().CreateOne(ctx, mongo.IndexModel{
+		Keys: bsonx.Doc{{Key: "name", Value: bsonx.Int32(1)}},
+		Options: &options.IndexOptions{
+			Unique: utils.NewBool(true),
+		},
+	})
+	if err != nil {
+		utils.GetLogger().WithError(err).Error("error while creating mongodb index")
+	}
+}
 
 func (db *DatabaseMongoDB) GetAllTemplates() ([]*model.Template, error) {
 	ctx := db.getCtx()
