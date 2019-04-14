@@ -22,7 +22,7 @@ func (db *DatabasePostgreSQL) GetAllTemplates() ([]*model.Template, error) {
 	us := make([]*model.Template, 0)
 	for rows.Next() {
 		u := model.Template{}
-		err := rows.Scan(&u.ID, &u.Code, &u.CreatedAt, &u.UpdatedAt)
+		err := rows.Scan(&u.ID, &u.Name, &u.CreatedAt, &u.UpdatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -40,7 +40,7 @@ func (db *DatabasePostgreSQL) GetTemplateByID(id string) (*model.Template, error
 	row := db.session.QueryRow(q, id)
 
 	u := model.Template{}
-	err := row.Scan(&u.ID, &u.Code, &u.CreatedAt, &u.UpdatedAt)
+	err := row.Scan(&u.ID, &u.Name, &u.CreatedAt, &u.UpdatedAt)
 	if errPq, ok := err.(*pq.Error); ok {
 		return nil, handlePgError(errPq)
 	}
@@ -60,7 +60,7 @@ func (db *DatabasePostgreSQL) CreateTemplate(template *model.Template) error {
 	`
 
 	err := db.session.
-		QueryRow(q, template.Code).
+		QueryRow(q, template.Name).
 		Scan(&template.ID, &template.CreatedAt)
 	if errPq, ok := err.(*pq.Error); ok {
 		return handlePgError(errPq)
@@ -91,7 +91,7 @@ func (db *DatabasePostgreSQL) UpdateTemplate(template *model.Template) error {
 	`
 
 	err := db.session.
-		QueryRow(q, template.ID, template.Code).
+		QueryRow(q, template.ID, template.Name).
 		Scan(&template.UpdatedAt)
 	if errPq, ok := err.(*pq.Error); ok {
 		return handlePgError(errPq)
