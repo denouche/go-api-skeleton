@@ -4,7 +4,7 @@ command -v gsed 2>&1 /dev/null && SED_CMD=gsed || SED_CMD=sed
 
 ## check sed is GNU sed
 ${SED_CMD} --version 2>&1 > /dev/null
-if [ $? -ne 0 ]
+if [[ $? -ne 0 ]]
 then
     echo "sed not compatible. If you are using Mac OS, please install GNU sed: brew install gnu-sed"
     exit 1
@@ -20,10 +20,11 @@ NEW_PROJECT_FULL_NAME=
 DAO_PG=
 DAO_MONGO=
 DAO_IN_MEMORY=
+DELETE_TEMPLATES=1
 
 init()
 {
-    if [ -d "$GOPATH" ]
+    if [[ -d "$GOPATH" ]]
     then
         BASE_DIR="$GOPATH"
     else
@@ -71,9 +72,9 @@ init()
 createProject()
 {
     # create project
-    mkdir -p $GOPATH/src/${NEW_PROJECT_NAMESPACE}
-    cp -rf . $GOPATH/src/${NEW_PROJECT_FULL_NAME}
-    cd $GOPATH/src/${NEW_PROJECT_FULL_NAME}
+    mkdir -p ${GOPATH}/src/${NEW_PROJECT_NAMESPACE}
+    cp -rf . ${GOPATH}/src/${NEW_PROJECT_FULL_NAME}
+    cd ${GOPATH}/src/${NEW_PROJECT_FULL_NAME}
 
     # init git and readme
     rm -rf .git/
@@ -109,43 +110,50 @@ createOneEntity()
     read ENTITY_NAME
     ENTITY_NAME_UP="$(tr '[:lower:]' '[:upper:]' <<< ${ENTITY_NAME:0:1})${ENTITY_NAME:1}" # because ENTITY_NAME_UP="${ENTITY_NAME^}" is for bash 4 only
 
-    if [ $DAO_PG -eq 1 ]
+    if [[ ${DAO_PG} -eq 1 ]]
     then
         echo "What is the postgresql schema to use for this entity? (if you plan to use MongoDB only, just type Enter)"
         read ENTITY_SCHEMA
     fi
 
-    cp handlers/template_handler.go handlers/${ENTITY_NAME}_handler.go
-    ${SED_CMD} -i -r "s/template/${ENTITY_NAME}/g" handlers/${ENTITY_NAME}_handler.go
-    ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" handlers/${ENTITY_NAME}_handler.go
+    if [[ "$ENTITY_NAME" = "template" ]]
+    then
+        # in this case everything is ok, just change the SQL schema
+        DELETE_TEMPLATES=0
+        ${SED_CMD} -i -r "s/schema/${ENTITY_SCHEMA}/g" storage/dao/postgresql/database_postgresql_${ENTITY_NAME}.go
+    else
+        cp handlers/template_handler.go handlers/${ENTITY_NAME}_handler.go
+        ${SED_CMD} -i -r "s/template/${ENTITY_NAME}/g" handlers/${ENTITY_NAME}_handler.go
+        ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" handlers/${ENTITY_NAME}_handler.go
 
-    cp storage/dao/postgresql/database_postgresql_template.go storage/dao/postgresql/database_postgresql_${ENTITY_NAME}.go
-    ${SED_CMD} -i -r "s/template/${ENTITY_NAME}/g" storage/dao/postgresql/database_postgresql_${ENTITY_NAME}.go
-    ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/dao/postgresql/database_postgresql_${ENTITY_NAME}.go
-    ${SED_CMD} -i -r "s/schema/${ENTITY_SCHEMA}/g" storage/dao/postgresql/database_postgresql_${ENTITY_NAME}.go
+        cp storage/dao/postgresql/database_postgresql_template.go storage/dao/postgresql/database_postgresql_${ENTITY_NAME}.go
+        ${SED_CMD} -i -r "s/template/${ENTITY_NAME}/g" storage/dao/postgresql/database_postgresql_${ENTITY_NAME}.go
+        ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/dao/postgresql/database_postgresql_${ENTITY_NAME}.go
+        ${SED_CMD} -i -r "s/schema/${ENTITY_SCHEMA}/g" storage/dao/postgresql/database_postgresql_${ENTITY_NAME}.go
 
-    cp storage/dao/mongodb/database_mongodb_template.go storage/dao/mongodb/database_mongodb_${ENTITY_NAME}.go
-    ${SED_CMD} -i -r "s/template/${ENTITY_NAME}/g" storage/dao/mongodb/database_mongodb_${ENTITY_NAME}.go
-    ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/dao/mongodb/database_mongodb_${ENTITY_NAME}.go
+        cp storage/dao/mongodb/database_mongodb_template.go storage/dao/mongodb/database_mongodb_${ENTITY_NAME}.go
+        ${SED_CMD} -i -r "s/template/${ENTITY_NAME}/g" storage/dao/mongodb/database_mongodb_${ENTITY_NAME}.go
+        ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/dao/mongodb/database_mongodb_${ENTITY_NAME}.go
 
-    cp storage/dao/mock/database_mock_template.go storage/dao/mock/database_mock_${ENTITY_NAME}.go
-    ${SED_CMD} -i -r "s/template/${ENTITY_NAME}/g" storage/dao/mock/database_mock_${ENTITY_NAME}.go
-    ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/dao/mock/database_mock_${ENTITY_NAME}.go
+        cp storage/dao/mock/database_mock_template.go storage/dao/mock/database_mock_${ENTITY_NAME}.go
+        ${SED_CMD} -i -r "s/template/${ENTITY_NAME}/g" storage/dao/mock/database_mock_${ENTITY_NAME}.go
+        ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/dao/mock/database_mock_${ENTITY_NAME}.go
 
-    cp storage/dao/fake/database_fake_template.go storage/dao/fake/database_fake_${ENTITY_NAME}.go
-    ${SED_CMD} -i -r "s/template/${ENTITY_NAME}/g" storage/dao/fake/database_fake_${ENTITY_NAME}.go
-    ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/dao/fake/database_fake_${ENTITY_NAME}.go
+        cp storage/dao/fake/database_fake_template.go storage/dao/fake/database_fake_${ENTITY_NAME}.go
+        ${SED_CMD} -i -r "s/template/${ENTITY_NAME}/g" storage/dao/fake/database_fake_${ENTITY_NAME}.go
+        ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/dao/fake/database_fake_${ENTITY_NAME}.go
 
-    cp storage/model/template.go storage/model/${ENTITY_NAME}.go
-    ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/model/${ENTITY_NAME}.go
+        cp storage/model/template.go storage/model/${ENTITY_NAME}.go
+        ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/model/${ENTITY_NAME}.go
 
-    ${SED_CMD} -i -r "/\/\/ start: template routes/{:next;N;/\/\/ end: template routes/{bend};bnext;:end;p;s|template|${ENTITY_NAME}|g;s|Template|${ENTITY_NAME_UP}|g}" handlers/handler.go
+        ${SED_CMD} -i -r "/\/\/ start: template routes/{:next;N;/\/\/ end: template routes/{bend};bnext;:end;p;s|template|${ENTITY_NAME}|g;s|Template|${ENTITY_NAME_UP}|g}" handlers/handler.go
 
-    ${SED_CMD} -i -r "/\/\/ start: template dao funcs/{:next;N;/\/\/ end: template dao funcs/{bend};bnext;:end;p;s|template|${ENTITY_NAME}|g;s|Template|${ENTITY_NAME_UP}|g}" storage/dao/database.go
+        ${SED_CMD} -i -r "/\/\/ start: template dao funcs/{:next;N;/\/\/ end: template dao funcs/{bend};bnext;:end;p;s|template|${ENTITY_NAME}|g;s|Template|${ENTITY_NAME_UP}|g}" storage/dao/database.go
 
-    ${SED_CMD} -i -r "/\/\/ Template export/{p;s/Template/${ENTITY_NAME_UP}/g}" storage/dao/fake/database_fake.go
+        ${SED_CMD} -i -r "/\/\/ Template export/{p;s/Template/${ENTITY_NAME_UP}/g}" storage/dao/fake/database_fake.go
 
-    ${SED_CMD} -i -r "/\/\/ Template index/{p;s/Template/${ENTITY_NAME_UP}/g}" storage/dao/mongodb/database_mongodb.go
+        ${SED_CMD} -i -r "/\/\/ Template index/{p;s/Template/${ENTITY_NAME_UP}/g}" storage/dao/mongodb/database_mongodb.go
+    fi
 }
 
 build()
@@ -157,28 +165,31 @@ build()
 
 clean()
 {
-    # remove template data
-    ${SED_CMD} -i -r "/\/\/ start: template routes/{:next;N;/\/\/ end: template routes/{bend};bnext;:end;d}" handlers/handler.go
-    ${SED_CMD} -i -r "/\/\/ start: template dao funcs/{:next;N;/\/\/ end: template dao funcs/{bend};bnext;:end;d}" storage/dao/database.go
-    ${SED_CMD} -i -r "/\/\/ Template export/d" storage/dao/fake/database_fake.go
-    ${SED_CMD} -i -r "/\/\/ Template index/d" storage/dao/mongodb/database_mongodb.go
+    if [[ ${DELETE_TEMPLATES} -eq 1 ]]
+    then
+        # remove template data
+        ${SED_CMD} -i -r "/\/\/ start: template routes/{:next;N;/\/\/ end: template routes/{bend};bnext;:end;d}" handlers/handler.go
+        ${SED_CMD} -i -r "/\/\/ start: template dao funcs/{:next;N;/\/\/ end: template dao funcs/{bend};bnext;:end;d}" storage/dao/database.go
+        ${SED_CMD} -i -r "/\/\/ Template export/d" storage/dao/fake/database_fake.go
+        ${SED_CMD} -i -r "/\/\/ Template index/d" storage/dao/mongodb/database_mongodb.go
 
-    find . -iname '*template*' -exec rm {} \;
+        find . -iname '*template*' -exec rm {} \;
+    fi
 
     # remove unwanted DAO
-    if [ $DAO_MONGO -eq 0 ]
+    if [[ ${DAO_MONGO} -eq 0 ]]
     then
         ${SED_CMD} -i -r '/\/\/ DAO MONGO/d' handlers/handler.go
         rm -rf ./storage/dao/mongodb
     fi
 
-    if [ $DAO_PG -eq 0 ]
+    if [[ ${DAO_PG} -eq 0 ]]
     then
         ${SED_CMD} -i -r '/\/\/ DAO PG/d' handlers/handler.go
         rm -rf ./storage/dao/postgresql
     fi
 
-    if [ $DAO_IN_MEMORY -eq 0 ]
+    if [[ ${DAO_IN_MEMORY} -eq 0 ]]
     then
         ${SED_CMD} -i -r '/\/\/ DAO IN MEMORY/d' handlers/handler.go cmd/root.go
         ${SED_CMD} -i -r '/(start-offline|db-in-memory)/d' Makefile
