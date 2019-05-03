@@ -24,7 +24,7 @@ func NewDataValidationAPIError(err error) model.APIError {
 					reason = truncatingSprintf(CustomValidators[e.Tag()].Message, e.Param())
 				}
 
-				namespaceWithoutStructName := regexpValidatorNamespacePrefix.ReplaceAllString(e.Namespace(), "")
+				namespaceWithoutStructName := regexpValidatorNamespacePrefix.ReplaceAllString(e.Namespace(), "$.")
 				fe := model.FieldError{
 					Field:       namespaceWithoutStructName,
 					Constraint:  e.Tag(),

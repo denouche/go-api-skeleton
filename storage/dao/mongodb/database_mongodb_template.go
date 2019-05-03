@@ -92,8 +92,11 @@ func (db *DatabaseMongoDB) UpdateTemplate(template *model.Template) error {
 
 	ctx := db.getCtx()
 	r, err := db.getSession().Collection(collectionTemplateName).ReplaceOne(ctx, bson.M{"_id": template.ID}, template)
+	if err != nil {
+		return err
+	}
 	if r.MatchedCount == 0 {
 		return dao.NewDAOError(dao.ErrTypeNotFound, err)
 	}
-	return err
+	return nil
 }
