@@ -5,6 +5,7 @@ const (
 	HeaderNameAuthorization = "authorization"
 	HeaderNameContentType   = "content-type"
 	HeaderNameCorrelationID = "correlationID"
+	HeaderNameLocation      = "location"
 
 	// cors headers
 	HeaderNameOrigin                        = "Origin"

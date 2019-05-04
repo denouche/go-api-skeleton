@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/denouche/go-api-skeleton/storage/dao"
@@ -123,6 +124,7 @@ func (hc *Context) CreateTemplate(c *gin.Context) {
 		return
 	}
 
+	c.Writer.Header().Set(httputils.HeaderNameLocation, fmt.Sprintf("%s/templates/%s", baseURI, template.Name))
 	httputils.JSON(c.Writer, http.StatusCreated, template)
 }
 
