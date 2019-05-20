@@ -74,6 +74,9 @@ func (db *DatabaseMongoDB) CreateTemplate(template *model.Template) error {
 
 	ctx := db.getCtx()
 	_, err := db.getSession().Collection(collectionTemplateName).InsertOne(ctx, template)
+	if ce, ok := err.(mongo.WriteException); ok {
+		return handleWriteException(ce)
+	}
 	return err
 }
 

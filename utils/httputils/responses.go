@@ -5,12 +5,18 @@ import (
 	"net/http"
 
 	"github.com/denouche/go-api-skeleton/storage/model"
+	"github.com/denouche/go-api-skeleton/utils"
 )
 
 func JSON(w http.ResponseWriter, status int, data interface{}) {
 	w.Header().Set(HeaderNameContentType, HeaderValueApplicationJSONUTF8)
 	w.WriteHeader(status)
 	if data != nil {
+		etag, err := utils.GenerateEtag(data)
+		if err == nil {
+			w.Header().Set(HeaderNameAccessControlExposeHeaders, HeaderNameETag)
+			w.Header().Set(HeaderNameETag, etag)
+		}
 		json.NewEncoder(w).Encode(data)
 	}
 }

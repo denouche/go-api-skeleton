@@ -55,16 +55,13 @@ func GetHTTPLoggerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 
-		utils.GetLoggerFromCtx(c).
-			WithField("method", c.Request.Method).
-			WithField("url", c.Request.RequestURI).
-			WithField("from", c.ClientIP()).
-			Info("start handling HTTP request")
-
 		c.Next()
 		d := time.Since(start)
 
 		utils.GetLoggerFromCtx(c).
+			WithField("method", c.Request.Method).
+			WithField("url", c.Request.RequestURI).
+			WithField("from", c.ClientIP()).
 			WithField("status", c.Writer.Status()).
 			WithField("duration", d.String()).
 			Info("end handling HTTP request")

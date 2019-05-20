@@ -29,6 +29,11 @@ var (
 		Type:     "already_exists",
 		HTTPCode: http.StatusConflict,
 	}
+	ErrVersionMismatched = APIError{
+		Type:        "precondition_failed",
+		HTTPCode:    http.StatusPreconditionFailed,
+		Description: "Model version mismatched",
+	}
 
 	// 50x
 	ErrInternalServer = APIError{

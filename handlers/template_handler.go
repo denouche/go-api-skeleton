@@ -341,6 +341,12 @@ func (hc *Context) UpdateTemplate(c *gin.Context) {
 		return
 	}
 
+	// check versions
+	if !utils.IsSameVersion(c, template) {
+		httputils.JSONError(c.Writer, model.ErrVersionMismatched)
+		return
+	}
+
 	// get body and verify data
 	b, err := c.GetRawData()
 	if err != nil {

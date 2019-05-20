@@ -11,9 +11,26 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+const (
+	mongoWriteErrorDuplicate      = 11000
+	mongoWriteErrorDuplicateOther = 11001
+)
+
 type DatabaseMongoDB struct {
 	client       *mongo.Client
 	databaseName string
+}
+
+func handleWriteException(e mongo.WriteException) error {
+	if len(e.WriteErrors) > 0 {
+		switch e.WriteErrors[0].Code {
+		case mongoWriteErrorDuplicate:
+			fallthrough
+		case mongoWriteErrorDuplicateOther:
+			return dao.NewDAOError(dao.ErrTypeDuplicate, e)
+		}
+	}
+	return e
 }
 
 func NewDatabaseMongoDB(connectionURI, dbName string) dao.Database {
