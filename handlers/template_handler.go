@@ -103,11 +103,11 @@ func (hc *Context) CreateTemplate(c *gin.Context) {
 		return
 	}
 
-	template := model.Template{
+	template := &model.Template{
 		TemplateEditable: templateToCreate,
 	}
 
-	err = hc.db.CreateTemplate(&template)
+	err = hc.db.CreateTemplate(template)
 	if e, ok := err.(*dao.DAOError); ok {
 		switch {
 		case e.Type == dao.ErrTypeDuplicate:
@@ -282,6 +282,12 @@ func (hc *Context) DeleteTemplate(c *gin.Context) {
 //		  	type: string
 //		  required: true
 //		  description: "The template id to update"
+//		- in: header
+//		  name: If-Match
+//		  schema:
+//		  	type: string
+//		  required: true
+//		  description: "The template version to update. You can find the template version using the GET endpoint, in the ETag response header. If the version has been updated between your GET and your PUT, you will receive a 412 Precondition Failed response."
 //		requestBody:
 //			description: The template data.
 //			required: true
