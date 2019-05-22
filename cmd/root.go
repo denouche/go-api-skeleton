@@ -41,8 +41,6 @@ var rootCmd = &cobra.Command{
 	Use:   "go-api-skeleton",
 	Short: "go-api-skeleton",
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.InitLogger(config.LogLevel, config.LogFormat)
-
 		logrus.
 			WithField(parameterConfigurationFile, cfgFile).
 			WithField(parameterLogLevel, config.LogLevel).
@@ -53,6 +51,8 @@ var rootCmd = &cobra.Command{
 			WithField(parameterDBConnectionURI, config.DBConnectionURI).
 			WithField(parameterDBName, config.DBName).
 			Warn("Configuration")
+
+		utils.InitLogger(config.LogLevel, config.LogFormat)
 
 		hc := handlers.NewHandlersContext(config)
 

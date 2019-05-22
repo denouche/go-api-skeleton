@@ -4,12 +4,6 @@ import (
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
-
-	"github.com/gin-gonic/gin"
-)
-
-const (
-	HeaderNameIfMatch = "If-Match"
 )
 
 func getHash(str string) string {
@@ -27,18 +21,17 @@ func GenerateEtag(data interface{}) (string, error) {
 	return tag, nil
 }
 
-func IsSameVersion(c *gin.Context, resource interface{}) bool {
+func IsSameVersion(expectedEtag string, resource interface{}) bool {
 	etag, err := GenerateEtag(resource)
 	if err != nil {
 		return false
 	}
 
-	ifMatch := c.GetHeader(HeaderNameIfMatch)
-	if ifMatch == "" {
+	if expectedEtag == "" {
 		return false
 	}
 
-	if ifMatch != etag {
+	if expectedEtag != etag {
 		return false
 	}
 

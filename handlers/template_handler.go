@@ -41,7 +41,7 @@ func (hc *Context) GetAllTemplates(c *gin.Context) {
 		httputils.JSONErrorWithMessage(c.Writer, model.ErrInternalServer, "Error while getting templates")
 		return
 	}
-	httputils.JSON(c.Writer, http.StatusOK, templates)
+	httputils.JSONOK(c, templates)
 }
 
 // @openapi:path
@@ -97,7 +97,7 @@ func (hc *Context) CreateTemplate(c *gin.Context) {
 		return
 	}
 
-	err = hc.validator.StructCtx(hc.getValidationContext(c), templateToCreate)
+	err = hc.validator.StructCtx(validators.NewContextWithValidationContext(c, hc.db), templateToCreate)
 	if err != nil {
 		httputils.JSONError(c.Writer, validators.NewDataValidationAPIError(err))
 		return
@@ -191,7 +191,7 @@ func (hc *Context) GetTemplate(c *gin.Context) {
 		return
 	}
 
-	httputils.JSON(c.Writer, http.StatusOK, template)
+	httputils.JSONOK(c, template)
 }
 
 // @openapi:path
@@ -348,7 +348,7 @@ func (hc *Context) UpdateTemplate(c *gin.Context) {
 	}
 
 	// check versions
-	if !utils.IsSameVersion(c, template) {
+	if !utils.IsSameVersion(c.GetHeader(httputils.HeaderNameIfMatch), template) {
 		httputils.JSONError(c.Writer, model.ErrVersionMismatched)
 		return
 	}
@@ -368,7 +368,7 @@ func (hc *Context) UpdateTemplate(c *gin.Context) {
 		return
 	}
 
-	err = hc.validator.StructCtx(hc.getValidationContext(c), templateToUpdate)
+	err = hc.validator.StructCtx(validators.NewContextWithValidationContext(c, hc.db), templateToUpdate)
 	if err != nil {
 		httputils.JSONError(c.Writer, validators.NewDataValidationAPIError(err))
 		return

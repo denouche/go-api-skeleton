@@ -9,6 +9,7 @@ const (
 	HeaderNameETag          = "ETag"
 	HeaderNameExpires       = "expires"
 	HeaderNameIfMatch       = "If-Match"
+	HeaderNameIfNoneMatch   = "If-None-Match"
 	HeaderNameLocation      = "location"
 
 	// cors headers
@@ -31,4 +32,5 @@ var AllowedHeaders = []string{
 	HeaderNameCorrelationID,
 	HeaderNameExpires,
 	HeaderNameIfMatch,
+	HeaderNameIfNoneMatch,
 }

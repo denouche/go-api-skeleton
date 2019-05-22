@@ -7,15 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CORSMiddlewareForOthersHTTPMethods() gin.HandlerFunc {
+func GetCORSMiddlewareForOthersHTTPMethods() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.Request.Method == http.MethodOptions {
 			c.Next()
 			return
 		}
 
-		v := c.Request.Header.Get(httputils.HeaderNameOrigin)
-		if v != "" {
+		if v := c.Request.Header.Get(httputils.HeaderNameOrigin); v != "" {
 			c.Writer.Header().Set(httputils.HeaderNameAccessControlAllowOrigin, v)
 		}
 		c.Next()

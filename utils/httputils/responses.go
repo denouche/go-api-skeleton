@@ -6,7 +6,16 @@ import (
 
 	"github.com/denouche/go-api-skeleton/storage/model"
 	"github.com/denouche/go-api-skeleton/utils"
+	"github.com/gin-gonic/gin"
 )
+
+func JSONOK(c *gin.Context, data interface{}) {
+	if utils.IsSameVersion(c.GetHeader(HeaderNameIfNoneMatch), data) {
+		JSON(c.Writer, http.StatusNotModified, data)
+		return
+	}
+	JSON(c.Writer, http.StatusOK, data)
+}
 
 func JSON(w http.ResponseWriter, status int, data interface{}) {
 	w.Header().Set(HeaderNameContentType, HeaderValueApplicationJSONUTF8)
