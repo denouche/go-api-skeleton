@@ -44,7 +44,7 @@ type Context struct {
 	validator *validator.Validate
 }
 
-func NewHandlersContext(config *Config) *Context {
+func NewContext(config *Config) *Context {
 	hc := &Context{}
 	if config.Mock {
 		hc.db = dbMock.NewDatabaseMock()

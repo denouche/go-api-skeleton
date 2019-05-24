@@ -26,10 +26,10 @@ init()
 {
     if [[ -d "$GOPATH" ]]
     then
-        BASE_DIR="$GOPATH"
+        BASE_DIR="$GOPATH/src"
     else
         # GOPATH not found, ask
-        echo "GOPATH not found, What is your project directory?"
+        echo "GOPATH not found, What is your project directory? (give the absolute path)"
         read BASE_DIR
     fi
 
@@ -72,9 +72,9 @@ init()
 createProject()
 {
     # create project
-    mkdir -p ${GOPATH}/src/${NEW_PROJECT_NAMESPACE}
-    cp -rf . ${GOPATH}/src/${NEW_PROJECT_FULL_NAME}
-    cd ${GOPATH}/src/${NEW_PROJECT_FULL_NAME}
+    mkdir -p ${BASE_DIR}/${NEW_PROJECT_NAMESPACE}
+    cp -rf . ${BASE_DIR}/${NEW_PROJECT_FULL_NAME}
+    cd ${BASE_DIR}/${NEW_PROJECT_FULL_NAME}
 
     # init git and readme
     rm -rf .git/

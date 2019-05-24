@@ -83,7 +83,7 @@ func (hc *Context) GetAllTemplates(c *gin.Context) {
 //						schema:
 //							$ref: "#/components/schemas/APIError"
 func (hc *Context) CreateTemplate(c *gin.Context) {
-	b, err := c.GetRawData()
+	body, err := c.GetRawData()
 	if err != nil {
 		utils.GetLoggerFromCtx(c).WithError(err).Error("error while creating template, read data fail")
 		httputils.JSONError(c.Writer, model.ErrInternalServer)
@@ -91,7 +91,7 @@ func (hc *Context) CreateTemplate(c *gin.Context) {
 	}
 
 	templateToCreate := model.TemplateEditable{}
-	err = json.Unmarshal(b, &templateToCreate)
+	err = json.Unmarshal(body, &templateToCreate)
 	if err != nil {
 		httputils.JSONError(c.Writer, model.ErrBadRequestFormat)
 		return
@@ -354,7 +354,7 @@ func (hc *Context) UpdateTemplate(c *gin.Context) {
 	}
 
 	// get body and verify data
-	b, err := c.GetRawData()
+	body, err := c.GetRawData()
 	if err != nil {
 		utils.GetLoggerFromCtx(c).WithError(err).Error("error while updating template, read data fail")
 		httputils.JSONError(c.Writer, model.ErrInternalServer)
@@ -362,7 +362,7 @@ func (hc *Context) UpdateTemplate(c *gin.Context) {
 	}
 
 	templateToUpdate := model.TemplateEditable{}
-	err = json.Unmarshal(b, &templateToUpdate)
+	err = json.Unmarshal(body, &templateToUpdate)
 	if err != nil {
 		httputils.JSONError(c.Writer, model.ErrBadRequestFormat)
 		return

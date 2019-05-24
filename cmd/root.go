@@ -54,7 +54,7 @@ var rootCmd = &cobra.Command{
 
 		utils.InitLogger(config.LogLevel, config.LogFormat)
 
-		hc := handlers.NewHandlersContext(config)
+		hc := handlers.NewContext(config)
 
 		router := handlers.NewRouter(hc)
 		err := router.Run(fmt.Sprintf(":%d", config.Port))
