@@ -1,7 +1,7 @@
 package mock
 
 import (
-	"github.com/denouche/go-api-skeleton/storage/model"
+	"github.com/denouche/go-api-skeleton/client/model"
 )
 
 func (db *DatabaseMock) GetAllTemplates() ([]*model.Template, error) {

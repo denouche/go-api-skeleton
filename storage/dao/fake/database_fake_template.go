@@ -7,8 +7,8 @@ import (
 
 	"github.com/denouche/go-api-skeleton/utils"
 
+	"github.com/denouche/go-api-skeleton/client/model"
 	"github.com/denouche/go-api-skeleton/storage/dao"
-	"github.com/denouche/go-api-skeleton/storage/model"
 	"github.com/satori/go.uuid"
 )
 

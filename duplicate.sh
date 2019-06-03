@@ -143,8 +143,8 @@ createOneEntity()
         ${SED_CMD} -i -r "s/template/${ENTITY_NAME}/g" storage/dao/fake/database_fake_${ENTITY_NAME}.go
         ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/dao/fake/database_fake_${ENTITY_NAME}.go
 
-        cp storage/model/template.go storage/model/${ENTITY_NAME}.go
-        ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/model/${ENTITY_NAME}.go
+        cp client/model/template.go client/model/${ENTITY_NAME}.go
+        ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" client/model/${ENTITY_NAME}.go
 
         ${SED_CMD} -i -r "/\/\/ start: template routes/{:next;N;/\/\/ end: template routes/{bend};bnext;:end;p;s|template|${ENTITY_NAME}|g;s|Template|${ENTITY_NAME_UP}|g}" handlers/handler.go
 

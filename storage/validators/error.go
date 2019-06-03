@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/denouche/go-api-skeleton/storage/model"
+	"github.com/denouche/go-api-skeleton/client/model"
 	"github.com/denouche/go-api-skeleton/utils"
 	"gopkg.in/go-playground/validator.v9"
 )
