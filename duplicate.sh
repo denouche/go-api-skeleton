@@ -83,7 +83,7 @@ createProject()
 
     # change go imports
     find . -iname '*.go' -exec ${SED_CMD} -i "s|${OLD_PROJECT_FULL_NAME}|${NEW_PROJECT_FULL_NAME}|g" {} \;
-    ${SED_CMD} -i "s|${OLD_PROJECT_FULL_NAME}|${NEW_PROJECT_FULL_NAME}|g" Makefile Dockerfile go.mod client/go.mod
+    ${SED_CMD} -i "s|${OLD_PROJECT_FULL_NAME}|${NEW_PROJECT_FULL_NAME}|g" Makefile Dockerfile go.mod pkg/client/go.mod
     ${SED_CMD} -i "s|${OLD_PROJECT_NAME}|${NEW_PROJECT_NAME}|g" Makefile Dockerfile info.yaml cmd/root.go
 }
 
@@ -143,8 +143,8 @@ createOneEntity()
         ${SED_CMD} -i -r "s/template/${ENTITY_NAME}/g" storage/dao/fake/database_fake_${ENTITY_NAME}.go
         ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" storage/dao/fake/database_fake_${ENTITY_NAME}.go
 
-        cp client/model/template.go client/model/${ENTITY_NAME}.go
-        ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" client/model/${ENTITY_NAME}.go
+        cp pkg/client/model/template.go pkg/client/model/${ENTITY_NAME}.go
+        ${SED_CMD} -i -r "s/Template/${ENTITY_NAME_UP}/g" pkg/client/model/${ENTITY_NAME}.go
 
         ${SED_CMD} -i -r "/\/\/ start: template routes/{:next;N;/\/\/ end: template routes/{bend};bnext;:end;p;s|template|${ENTITY_NAME}|g;s|Template|${ENTITY_NAME_UP}|g}" handlers/handler.go
 
