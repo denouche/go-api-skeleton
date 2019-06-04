@@ -50,7 +50,7 @@ release: bump ## bump the version in the info.yaml, and make a release (commit, 
 	git add info.yaml
 	standard-version --message "chore(release): %s [ci skip]" --commit-all
 	NEW_VERSION=`cat info.yaml | sed -E '/version:/!d;s/.*: *'"'"'?([^$$])'"'"'?/\1/'`; \
-		git tag client/v$$NEW_VERSION HEAD
+		git tag pkg/client/v$$NEW_VERSION HEAD
 	git push --tags origin HEAD
 
 .PHONY: openapi
