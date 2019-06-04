@@ -3,7 +3,7 @@ package postgresql
 import (
 	"database/sql"
 
-	"github.com/denouche/go-api-skeleton/client/model"
+	"github.com/denouche/go-api-skeleton/pkg/client/model"
 	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/lib/pq"
 )

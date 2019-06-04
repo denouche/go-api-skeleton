@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/denouche/go-api-skeleton/client/model"
+	"github.com/denouche/go-api-skeleton/pkg/client/model"
 	"github.com/denouche/go-api-skeleton/storage/dao"
 	"github.com/denouche/go-api-skeleton/storage/validators"
 	"github.com/denouche/go-api-skeleton/utils"

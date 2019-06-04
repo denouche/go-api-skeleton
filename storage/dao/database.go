@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"github.com/denouche/go-api-skeleton/client/model"
+	"github.com/denouche/go-api-skeleton/pkg/client/model"
 )
 
 type Database interface {
