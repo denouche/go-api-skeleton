@@ -21,11 +21,11 @@ help: ## display this help
 	@echo " $(shell cat Makefile | sed -E '/^[a-zA-Z-]+:.*##.*/!d;s/## *//;s/$$/\\n/')"
 
 .PHONY: start
-start: openapi ## start the application
+start: generate ## start the application
 	go run main.go --config config/local.json
 
 .PHONY: start-offline
-start-offline: openapi ## start the application in offline mode
+start-offline: generate ## start the application in offline mode
 	go run main.go --log-level debug --log-format text --db-in-memory
 
 .PHONY: deps
@@ -58,4 +58,7 @@ openapi: ## install openapi-parser and generate openapi schema
 	go get github.com/alexjomin/openapi-parser
 	openapi-parser --output openapi.yaml
 	openapi-parser merge --output openapi.yaml --main info.yaml --dir .
-	go generate
+
+.PHONY: generate
+generate: openapi ## go generate copy the openapi schema into go file, and copy models to pkg/client
+	go generate -x

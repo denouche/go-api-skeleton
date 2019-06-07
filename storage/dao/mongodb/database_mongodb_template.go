@@ -3,8 +3,8 @@ package mongodb
 import (
 	"time"
 
-	"github.com/denouche/go-api-skeleton/pkg/client/model"
 	"github.com/denouche/go-api-skeleton/storage/dao"
+	"github.com/denouche/go-api-skeleton/storage/model"
 	"github.com/denouche/go-api-skeleton/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

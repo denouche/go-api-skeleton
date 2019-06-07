@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/denouche/go-api-skeleton/pkg/client/model"
+	"github.com/denouche/go-api-skeleton/storage/model"
 	"github.com/denouche/go-api-skeleton/utils"
 	"github.com/gin-gonic/gin"
 )
