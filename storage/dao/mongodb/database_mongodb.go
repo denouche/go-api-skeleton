@@ -44,14 +44,11 @@ func NewDatabaseMongoDB(connectionURI, dbName string) dao.Database {
 		err = client.Ping(ctx, readpref.Primary())
 		ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
 		if err != nil {
-			err = client.Ping(ctx, readpref.Primary())
-			if err != nil {
-				utils.GetLogger().WithError(err).Error("Unable to ping mongodb, waiting 2s before retrying...")
-				time.Sleep(2 * time.Second)
-				continue
-			}
-			break
+			utils.GetLogger().WithError(err).Error("Unable to ping mongodb, waiting 2s before retrying...")
+			time.Sleep(2 * time.Second)
+			continue
 		}
+		break
 	}
 
 	result := &DatabaseMongoDB{
