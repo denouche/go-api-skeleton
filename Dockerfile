@@ -7,7 +7,7 @@ RUN apk --no-cache add -U make git musl-dev gcc
 
 WORKDIR /go/src/github.com/denouche/go-api-skeleton
 COPY . /go/src/github.com/denouche/go-api-skeleton
-RUN make deps generate test build
+RUN make generate deps test build
 
 # run
 FROM alpine:latest
